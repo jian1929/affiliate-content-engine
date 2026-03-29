@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Revenue Hub — All-in-One Link</title>
+    <meta name="description" content="Free tools, guides, and affiliate deals for Amazon sellers. Everything you need in one link.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Auto Revenue Hub">
+    <meta property="og:description" content="Free tools, guides, and deals for Amazon sellers.">
+    <meta property="og:type" content="website">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #e5e5e5;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Profile Header */
+        .profile {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            border: 3px solid #fff;
+        }
+
+        .username {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .bio {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        /* Links Grid */
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Featured Link */
+        .link-featured {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 20px 25px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .link-featured:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .link-featured .icon {
+            font-size: 1.8rem;
+        }
+
+        /* Regular Link */
+        .link-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px 20px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .link-card .icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .link-card .content {
+            flex: 1;
+        }
+
+        .link-card .title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .link-card .desc {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .link-card .badge {
+            background: #ff0050;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 0 15px;
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .section-header .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Affiliate Tools */
+        .affiliate-tools {
+            margin-top: 20px;
+        }
+
+        .affiliate-card {
+            background: linear-gradient(135deg, rgba(255, 0, 80, 0.2), rgba(0, 242, 234, 0.2));
+            border: 1px solid rgba(255, 0, 80, 0.3);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+
+        .affiliate-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .affiliate-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 0.7rem;
+        }
+
+        .affiliate-info h3 {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .affiliate-info .commission {
+            font-size: 0.8rem;
+            color: #00ff88;
+        }
+
+        .affiliate-desc {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .affiliate-btn {
+            display: block;
+            background: linear-gradient(135deg, #ff0050, #ff4080);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .affiliate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 0, 80, 0.4);
+        }
+
+        /* Social Icons */
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #00ff88;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer p {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a:hover {
+            color: #00ff88;
+        }
+
+        /* Quick Stats Bar */
+        .quick-stats {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .quick-stat {
+            text-align: center;
+        }
+
+        .quick-stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .quick-stat-label {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        /* Earnings Tracker */
+        .earnings-tracker {
+            background: linear-gradient(135deg, #1a1a2e, #2a1a3e);
+            border: 2px solid #00ff88;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .earnings-title {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .earnings-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .earnings-period {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .earnings-cta {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Profile -->
+        <div class="profile">
+            <div class="avatar">💰</div>
+            <div class="username">@AutoRevenueHub</div>
+            <div class="bio">Free tools, guides & affiliate deals for Amazon sellers. Everything you need in one link.</div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">26</div>
+                    <div class="stat-label">Free Tools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">47+</div>
+                    <div class="stat-label">SEO Articles</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">20%</div>
+                    <div class="stat-label">Commissions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings Tracker -->
+        <div class="earnings-tracker">
+            <div class="earnings-title">💡 Affiliate Earnings This Month</div>
+            <div class="earnings-amount" id="earningsAmount">$0.00</div>
+            <div class="earnings-period">Click links → earn commissions</div>
+            <a href="#affiliate" class="earnings-cta">Start Earning →</a>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="quick-stat">
+                <div class="quick-stat-value">3.5B+</div>
+                <div class="quick-stat-label">YT Shorts Views</div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-value">1B+</div>
+                <div class="quick-stat-label">TikTok Users</div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-value">23%</div>
+                <div class="quick-stat-label">Purchase Rate</div>
+            </div>
+        </div>
+
+        <!-- Featured Tool -->
+        <div class="section-header">
+            <span class="icon">⭐</span>
+            <span>Featured Tool</span>
+        </div>
+        <a href="blog/youtube-shorts-generator.html" class="link-featured">
+            <span class="icon">🎬</span>
+            <span>YouTube Shorts Script Generator — Free!</span>
+        </a>
+
+        <!-- Free Tools -->
+        <div class="section-header">
+            <span class="icon">🛠️</span>
+            <span>Free Tools</span>
+        </div>
+
+        <div class="links-grid">
+            <a href="blog/tiktok-hook-generator.html" class="link-card">
+                <span class="icon">🎵</span>
+                <div class="content">
+                    <div class="title">TikTok Hook Generator <span class="badge">NEW</span></div>
+                    <div class="desc">3-second hooks that stop the scroll</div>
+                </div>
+            </a>
+
+            <a href="blog/twitter-thread-generator.html" class="link-card">
+                <span class="icon">🐦</span>
+                <div class="content">
+                    <div class="title">Twitter Thread Generator</div>
+                    <div class="desc">Viral threads in 30 seconds</div>
+                </div>
+            </a>
+
+            <a href="blog/reddit-post-generator.html" class="link-card">
+                <span class="icon">🤖</span>
+                <div class="content">
+                    <div class="title">Reddit Post Generator</div>
+                    <div class="desc">Perfect posts for any community</div>
+                </div>
+            </a>
+
+            <a href="blog/linkedin-post-generator.html" class="link-card">
+                <span class="icon">💼</span>
+                <div class="content">
+                    <div class="title">LinkedIn Post Generator</div>
+                    <div class="desc">B2B content for Amazon sellers</div>
+                </div>
+            </a>
+
+            <a href="blog/share-scheduler.html" class="link-card">
+                <span class="icon">📅</span>
+                <div class="content">
+                    <div class="title">Share Scheduler</div>
+                    <div class="desc">Schedule your content calendar</div>
+                </div>
+            </a>
+
+            <a href="blog/amazon-fba-calculator.html" class="link-card">
+                <span class="icon">🧮</span>
+                <div class="content">
+                    <div class="title">FBA Profit Calculator</div>
+                    <div class="desc">Calculate your true profits</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="section-header">
+            <span class="icon">📚</span>
+            <span>Free Guides & Articles</span>
+        </div>
+
+        <div class="links-grid">
+            <a href="blog/amazon-repricing-strategy-2026.html" class="link-card">
+                <span class="icon">💹</span>
+                <div class="content">
+                    <div class="title">Amazon Repricing Strategy 2026</div>
+                    <div class="desc">47 strategies to win the Buy Box</div>
+                </div>
+            </a>
+
+            <a href="blog/helium-10-vs-jungle-scout.html" class="link-card">
+                <span class="icon">⚔️</span>
+                <div class="content">
+                    <div class="title">Helium 10 vs Jungle Scout</div>
+                    <div class="desc">Which tool actually wins?</div>
+                </div>
+            </a>
+
+            <a href="blog/buy-box-strategy-amazon.html" class="link-card">
+                <span class="icon">🏆</span>
+                <div class="content">
+                    <div class="title">Buy Box Strategy Guide</div>
+                    <div class="desc">Win more, lose less</div>
+                </div>
+            </a>
+
+            <a href="blog/best-amazon-repricing-tools-2026.html" class="link-card">
+                <span class="icon">🔧</span>
+                <div class="content">
+                    <div class="title">Best Repricing Tools 2026</div>
+                    <div class="desc">Top tools compared</div>
+                </div>
+            </a>
+
+            <a href="index.html" class="link-card">
+                <span class="icon">📖</span>
+                <div class="content">
+                    <div class="title">View All 47+ Articles</div>
+                    <div class="desc">Complete article library</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Affiliate Deals -->
+        <div class="section-header" id="affiliate">
+            <span class="icon">💳</span>
+            <span>Recommended Tools (I earn a commission)</span>
+        </div>
+
+        <div class="affiliate-tools">
+            <div class="affiliate-card">
+                <div class="affiliate-header">
+                    <div class="affiliate-logo">H10</div>
+                    <div class="affiliate-info">
+                        <h3>Helium 10</h3>
+                        <div class="commission">20% recurring commission</div>
+                    </div>
+                </div>
+                <div class="affiliate-desc">
+                    All-in-one Amazon seller tool suite. Product research, keyword tracking, repricing, and more. Used by 1M+ sellers worldwide.
+                </div>
+                <a href="https://join.airbyme.com/affiliate/go/autocomsuite-20" class="affiliate-btn">
+                    🔗 Try Helium 10 Free
+                </a>
+            </div>
+
+            <div class="affiliate-card">
+                <div class="affiliate-header">
+                    <div class="affiliate-logo">JS</div>
+                    <div class="affiliate-info">
+                        <h3>Jungle Scout</h3>
+                        <div class="commission">30% first-year commission</div>
+                    </div>
+                </div>
+                <div class="affiliate-desc">
+                    Industry-leading product research and competitor intelligence. Perfect for finding winning products to sell.
+                </div>
+                <a href="https://www.junglescout.com/partner/autocomsuite" class="affiliate-btn">
+                    🔗 Try Jungle Scout
+                </a>
+            </div>
+
+            <div class="affiliate-card">
+                <div class="affiliate-header">
+                    <div class="affiliate-logo">K</div>
+                    <div class="affiliate-info">
+                        <h3>Keepa</h3>
+                        <div class="commission">15% recurring commission</div>
+                    </div>
+                </div>
+                <div class="affiliate-desc">
+                    Price tracking and history charts. See price trends over 5+ years. Essential for finding underpriced products.
+                </div>
+                <a href="https://keepa.com/#affiliate/autocomsuite" class="affiliate-btn">
+                    🔗 Try Keepa
+                </a>
+            </div>
+
+            <div class="affiliate-card">
+                <div class="affiliate-header">
+                    <div class="affiliate-logo">CA</div>
+                    <div class="affiliate-info">
+                        <h3>CamelCamelCamel</h3>
+                        <div class="commission">Free to use</div>
+                    </div>
+                </div>
+                <div class="affiliate-desc">
+                    The original Amazon price tracker. Free tier available. Great for casual sellers.
+                </div>
+                <a href="https://camelcamelcamel.com" class="affiliate-btn">
+                    🔗 Try CamelCamelCamel
+                </a>
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="social-icons">
+            <a href="https://twitter.com/autorevenuehub" class="social-icon">🐦</a>
+            <a href="https://tiktok.com/@autorevenuehub" class="social-icon">🎵</a>
+            <a href="https://youtube.com/@autorevenuehub" class="social-icon">📺</a>
+            <a href="https://instagram.com/autorevenuehub" class="social-icon">📸</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 Auto Revenue Hub. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="mailto:contact@autorevenuehub.com">Contact</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+            <p style="margin-top: 20px; color: #444; font-size: 0.75rem;">
+                Affiliate Disclosure: Some links are affiliate links. We earn a commission at no extra cost to you.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Load earnings from localStorage
+        function loadEarnings() {
+            const earnings = localStorage.getItem('affiliateEarnings') || '0.00';
+            document.getElementById('earningsAmount').textContent = '$' + earnings;
+        }
+
+        loadEarnings();
+
+        // Track affiliate clicks
+        document.querySelectorAll('.affiliate-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const clicks = parseInt(localStorage.getItem('affiliateClicks') || '0') + 1;
+                localStorage.setItem('affiliateClicks', clicks.toString());
+            });
+        });
+    </script>
+</body>
+</html>
