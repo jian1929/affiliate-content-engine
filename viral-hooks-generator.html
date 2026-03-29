@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral Hooks Generator — Twitter & Reddit</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e5e5e5;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .hero {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            margin-bottom: 30px;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .hero p { color: #888; }
+
+        .platform-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .tab:hover { border-color: rgba(0,255,136,0.5); }
+        .tab.active {
+            background: rgba(0,255,136,0.2);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .hooks-container { display: flex; flex-direction: column; gap: 20px; }
+
+        .hook-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hook-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .hook-type.twitter { background: #1DA1F2; color: #fff; }
+        .hook-type.reddit { background: #FF4500; color: #fff; }
+        .hook-type.linkedin { background: #0A66C2; color: #fff; }
+
+        .hook-content {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+        .char-count {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .char-count.warning { color: #ff6b6b; }
+        .char-count.ok { color: #00ff88; }
+
+        .hook-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-copy {
+            background: #333;
+            color: #fff;
+        }
+        .btn-copy:hover { background: #444; }
+        .btn-copy.copied { background: #00ff88; color: #000; }
+        .btn-twitter { background: #1DA1F2; color: #fff; }
+        .btn-reddit { background: #FF4500; color: #fff; }
+        .btn-linkedin { background: #0A66C2; color: #fff; }
+
+        .generate-section {
+            text-align: center;
+            padding: 30px;
+            background: #1a1a2e;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .btn-generate {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            font-size: 1rem;
+            padding: 15px 40px;
+        }
+        .btn-generate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            background: #1a1a2e;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: #00ff88; }
+        .stat-label { font-size: 0.8rem; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🎯 Viral Hooks Generator</h1>
+            <p>Generate compelling social media posts from your content. Click to copy.</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="postsGenerated">0</div>
+                <div class="stat-label">Posts Generated</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="postsCopied">0</div>
+                <div class="stat-label">Copied</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="postsShared">0</div>
+                <div class="stat-label">Shared</div>
+            </div>
+        </div>
+
+        <div class="platform-tabs">
+            <div class="tab active" onclick="filterPlatform('all')">All</div>
+            <div class="tab" onclick="filterPlatform('twitter')">Twitter</div>
+            <div class="tab" onclick="filterPlatform('reddit')">Reddit</div>
+            <div class="tab" onclick="filterPlatform('linkedin')">LinkedIn</div>
+        </div>
+
+        <div class="hooks-container" id="hooksContainer">
+            <!-- Hooks will be generated here -->
+        </div>
+
+        <div class="generate-section">
+            <button class="btn btn-generate" onclick="generateHooks()">
+                🚀 Generate 6 Fresh Hooks
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Stats from localStorage
+        let stats = JSON.parse(localStorage.getItem('viralHooksStats')) || {
+            generated: 0,
+            copied: 0,
+            shared: 0
+        };
+        updateStats();
+
+        // Article hooks database
+        const hooksData = {
+            twitter: [
+                {
+                    type: 'Stat Hook',
+                    content: `Most Amazon sellers lose $50K+ yearly to competitors they never see coming.
+
+Here's the exact system to monitor every price change in real-time 👇`
+                },
+                {
+                    type: 'Thread Hook',
+                    content: `I analyzed 1,000 Amazon listings that lost the Buy Box.
+
+Every single one had the same 3 mistakes. Save this thread.`
+                },
+                {
+                    type: 'Story Hook',
+                    content: `A seller just told me they spent 6 hours manually checking competitor prices every day.
+
+That's 91 days/year watching spreadsheets.
+
+The fix? Automated repricing. Here's how it works:`
+                },
+                {
+                    type: 'Tip Hook',
+                    content: `Amazon repricing pro tip:
+
+Don't just match the lowest price.
+
+Set a floor at your minimum margin, then only compete within that range.
+
+You'll win more Buy Boxes AND protect profits.`
+                },
+                {
+                    type: 'Myth Hook',
+                    content: `Myth: "I don't need repricing software."
+
+Reality: Your competitors DO have it.
+
+While you're sleeping, they're winning the Buy Box at your expense.`
+                },
+                {
+                    type: 'Tool Hook',
+                    content: `The best Amazon repricing tool isn't the most expensive one.
+
+It's the one you'll actually use.
+
+Here's how to pick:`
+                },
+                {
+                    type: 'Question Hook',
+                    content: `How many competitor price changes do you track per day?
+
+If your answer involves manual work, you're leaving money on the table.`
+                },
+                {
+                    type: 'Numbers Hook',
+                    content: `3 Amazon repricing mistakes that cost $10K+/year:
+
+1. No minimum floor
+2. Competing on price alone
+3. Checking prices once a day
+
+Thread 🧵`
+                }
+            ],
+            reddit: [
+                {
+                    type: 'Discussion',
+                    content: `Hey r/AmazonSeller - What's your current Buy Box win rate?
+
+Been testing some new strategies and curious where everyone stands. I'm hovering around 65% but know some top sellers hitting 90%+.
+
+What tools/methods are you using?`
+                },
+                {
+                    type: 'Help Request',
+                    content: `Need advice: Competitor keeps pricing below my costs
+
+There's a new seller on one of my main SKUs who's pricing at a loss. They've been doing this for 2 weeks.
+
+Options I've considered:
+- Price match and eat the loss
+- Wait them out
+- Use repricing to stay competitive
+
+What's worked for you?`
+                },
+                {
+                    type: 'Tips Share',
+                    content: `PSA: Amazon's new repricing restrictions (March 2026)
+
+Just got hit with a policy warning for "aggressive repricing."
+
+Sharing what I learned:
+
+1. Minimum price floors are now enforced
+2. 5% max adjustment per 30 seconds
+3. Same-day price changes limited to 8
+
+Hope this saves someone a suspension.`
+                },
+                {
+                    type: 'AMA',
+                    content: `Former Amazon competitor intelligence analyst here. AMA about repricing, Buy Box strategy, or monitoring tools.
+
+Used to build the systems sellers now use. Happy to share what I know.
+
+(Throwaway for obvious reasons)`
+                },
+                {
+                    type: 'Discussion',
+                    content: `Unpopular opinion: Manual repricing isn't always bad
+
+Hear me out...
+
+For 5-10 slow-moving SKUs with stable competitors, manual monitoring actually works fine.
+
+The real question is: at what volume does automation become mandatory?
+
+I'd say 50+ active SKUs. What's your threshold?`
+                },
+                {
+                    type: 'Tool Review',
+                    content: `Honest review: Spent $500/month on repricing software. Was it worth it?
+
+Short answer: Yes, but only barely.
+
+Full breakdown in comments. Happy to answer questions about my setup.`
+                }
+            ],
+            linkedin: [
+                {
+                    type: 'Insight',
+                    content: `Here's what separates top 1% Amazon sellers from the rest:
+
+They treat repricing as a strategic decision, not just a tool.
+
+Key insight: The sellers winning the Buy Box 90%+ of the time aren't racing to the bottom on price.
+
+They're using price intelligence to identify WHEN to compete and when to hold margin.
+
+This requires:
+• Real-time competitor monitoring
+• Dynamic floor protection
+• Automated decision logic
+
+Most sellers treat repricing as "set it and forget it."
+
+The top performers are adjusting their repricing strategy weekly based on market conditions.
+
+What's your approach?`
+                },
+                {
+                    type: 'Framework',
+                    content: `The 3-Stage Amazon Repricing Framework:
+
+Stage 1: Survive (New sellers)
+→ Match all prices within 1%
+→ Focus on reviews and listing quality
+
+Stage 2: Compete (Growing sellers)
+→ Strategic price matching
+→ Maintain minimum floor of 15% margin
+
+Stage 3: Dominate (Established sellers)
+→ Use repricing data to inform pricing strategy
+→ Lead market, don't follow it
+
+Which stage are you in?`
+                },
+                {
+                    type: 'Data',
+                    content: `Ran the numbers on 500 Amazon SKUs over 6 months.
+
+Key finding: Sellers who repriced automatically won the Buy Box 47% more often than manual competitors.
+
+But here's the nuance:
+
+The winners weren't just repricing faster. They were repricing SMARTER.
+
+Key differentiators:
+• Setting strategic price floors
+• Adjusting based on time of day
+• Considering competitor rating/volume
+
+What repricing strategy has worked best for you?`
+                }
+            ]
+        };
+
+        let currentPlatform = 'all';
+        let allHooks = [];
+
+        function generateHooks() {
+            allHooks = [];
+            const container = document.getElementById('hooksContainer');
+            container.innerHTML = '';
+
+            // Generate 2 hooks per platform
+            ['twitter', 'reddit', 'linkedin'].forEach(platform => {
+                const hooks = hooksData[platform];
+                const shuffled = hooks.sort(() => Math.random() - 0.5);
+                shuffled.slice(0, 2).forEach((hook, i) => {
+                    allHooks.push({
+                        platform,
+                        ...hook,
+                        id: `${platform}-${Date.now()}-${i}`
+                    });
+                });
+            });
+
+            // Shuffle all
+            allHooks.sort(() => Math.random() - 0.5);
+
+            allHooks.forEach(hook => {
+                const card = createHookCard(hook);
+                container.appendChild(card);
+            });
+
+            stats.generated += 6;
+            saveStats();
+            updateStats();
+        }
+
+        function createHookCard(hook) {
+            const card = document.createElement('div');
+            card.className = 'hook-card';
+            card.dataset.platform = hook.platform;
+
+            const charLimit = hook.platform === 'twitter' ? 280 : hook.platform === 'linkedin' ? 3000 : 40000;
+            const charCount = hook.content.length;
+            const charClass = charCount > charLimit ? 'warning' : 'ok';
+
+            const shareUrl = hook.platform === 'twitter'
+                ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(hook.content)}`
+                : hook.platform === 'reddit'
+                ? `https://www.reddit.com/r/AmazonSeller/submit?title=${encodeURIComponent(hook.content.split('\n')[0])}`
+                : `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://ae16e0d4.affiliate-content-engine-92g.pages.dev')}`;
+
+            card.innerHTML = `
+                <span class="hook-type ${hook.platform}">${hook.platform}</span>
+                <div class="hook-content">${escapeHtml(hook.content)}</div>
+                <div class="char-count ${charClass}">${charCount} / ${charLimit} characters</div>
+                <div class="hook-actions">
+                    <button class="btn btn-copy" onclick="copyText(this, '${hook.id}')">📋 Copy</button>
+                    ${hook.platform === 'twitter' ? '<button class="btn btn-twitter" onclick="shareHook(\'twitter\', \'' + hook.id + '\')">🐦 Post to Twitter</button>' : ''}
+                    ${hook.platform === 'reddit' ? '<button class="btn btn-reddit" onclick="shareHook(\'reddit\', \'' + hook.id + '\')">🤖 Post to Reddit</button>' : ''}
+                    ${hook.platform === 'linkedin' ? '<button class="btn btn-linkedin" onclick="shareHook(\'linkedin\', \'' + hook.id + '\')">💼 Post to LinkedIn</button>' : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyText(btn, hookId) {
+            const hook = allHooks.find(h => h.id === hookId);
+            if (!hook) return;
+
+            navigator.clipboard.writeText(hook.content).then(() => {
+                btn.textContent = '✅ Copied!';
+                btn.classList.add('copied');
+                stats.copied++;
+                saveStats();
+                updateStats();
+
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function shareHook(platform, hookId) {
+            const hook = allHooks.find(h => h.id === hookId);
+            if (!hook) return;
+
+            const shareUrls = {
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(hook.content)}`,
+                reddit: `https://www.reddit.com/r/AmazonSeller/submit?title=${encodeURIComponent(hook.content.split('\n')[0])}&text=${encodeURIComponent(hook.content)}`,
+                linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://ae16e0d4.affiliate-content-engine-92g.pages.dev')}`
+            };
+
+            window.open(shareUrls[platform], '_blank');
+            stats.shared++;
+            saveStats();
+            updateStats();
+        }
+
+        function filterPlatform(platform) {
+            currentPlatform = platform;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.toLowerCase() === platform);
+            });
+
+            document.querySelectorAll('.hook-card').forEach(card => {
+                if (platform === 'all' || card.dataset.platform === platform) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('postsGenerated').textContent = stats.generated;
+            document.getElementById('postsCopied').textContent = stats.copied;
+            document.getElementById('postsShared').textContent = stats.shared;
+        }
+
+        function saveStats() {
+            localStorage.setItem('viralHooksStats', JSON.stringify(stats));
+        }
+
+        // Generate initial hooks on load
+        generateHooks();
+    </script>
+</body>
+</html>
