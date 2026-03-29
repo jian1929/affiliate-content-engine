@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Command Center — One-Click Distribution</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .hero { text-align: center; padding: 40px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(255, 100, 100, 0.3); }
+        h1 { font-size: 2.5rem; background: linear-gradient(135deg, #ff6666, #ff9966); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .subtitle { color: #888; margin-bottom: 20px; }
+        .card { background: #1a1a2e; border-radius: 16px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h2 { color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .btn { padding: 15px 35px; border-radius: 30px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .btn-massive { padding: 20px 50px; font-size: 1.3rem; background: linear-gradient(135deg, #ff6666, #ff9966); color: #fff; }
+        .btn-massive:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 40px rgba(255, 100, 100, 0.5); }
+        .btn-primary { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .status { padding: 15px; border-radius: 10px; margin: 10px 0; display: flex; align-items: center; gap: 10px; }
+        .status.success { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .status.pending { background: rgba(255, 100, 100, 0.2); color: #ff6666; }
+        .status.info { background: rgba(0, 204, 255, 0.2); color: #00ccff; }
+        .channels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }
+        .channel-card { background: #0a0a0f; border-radius: 16px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .channel-card:hover { border-color: rgba(255, 100, 100, 0.5); transform: translateY(-5px); }
+        .channel-card.active { border-color: #ff6666; box-shadow: 0 0 30px rgba(255, 100, 100, 0.2); }
+        .channel-card .icon { font-size: 3rem; margin-bottom: 15px; }
+        .channel-card h3 { color: #fff; margin-bottom: 10px; font-size: 1.2rem; }
+        .channel-card p { color: #888; font-size: 0.9rem; margin-bottom: 15px; line-height: 1.6; }
+        .channel-card .stats { display: flex; gap: 15px; margin-bottom: 15px; }
+        .channel-card .stat { text-align: center; }
+        .channel-card .stat-value { font-size: 1.5rem; font-weight: bold; color: #ff6666; }
+        .channel-card .stat-label { font-size: 0.75rem; color: #888; }
+        .channel-card input[type="checkbox"] { transform: scale(1.3); margin-right: 10px; }
+        .channel-card label { display: flex; align-items: center; cursor: pointer; }
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .action-card { background: #0a0a0f; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .action-card:hover { border-color: #ff6666; }
+        .action-card.selected { border-color: #ff6666; background: rgba(255, 100, 100, 0.1); }
+        .action-card .icon { font-size: 2rem; margin-bottom: 10px; }
+        .action-card h4 { color: #fff; margin-bottom: 5px; }
+        .action-card p { color: #888; font-size: 0.85rem; }
+        .progress-section { background: #0a0a0f; border-radius: 12px; padding: 20px; margin: 20px 0; }
+        .progress-bar { height: 12px; background: #333; border-radius: 6px; overflow: hidden; margin: 15px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ff6666, #ff9966); transition: width 0.5s; border-radius: 6px; }
+        .progress-text { display: flex; justify-content: space-between; color: #888; font-size: 0.9rem; }
+        .tips { background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.3); border-radius: 12px; padding: 20px; margin: 20px 0; }
+        .tips h3 { color: #ff6666; margin-bottom: 10px; }
+        .tips ul { margin-left: 20px; color: #888; line-height: 1.8; }
+        .tips li { margin: 5px 0; }
+        .quick-links { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+        .quick-links a { padding: 8px 16px; background: #0a0a0f; border-radius: 20px; color: #ff6666; text-decoration: none; font-size: 0.85rem; transition: all 0.3s; }
+        .quick-links a:hover { background: rgba(255, 100, 100, 0.2); }
+        .confetti { position: fixed; width: 10px; height: 10px; animation: fall 3s linear forwards; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        @media (max-width: 600px) { h1 { font-size: 1.8rem; } .channels-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Traffic Command Center</h1>
+            <p class="subtitle">One-click distribution to search engines, directories, and social platforms.</p>
+
+            <div class="quick-links">
+                <a href="indexing-center.html">🔍 Google Indexing</a>
+                <a href="bing-webmaster.html">🔵 Bing Webmaster</a>
+                <a href="directory-submission.html">📂 Directory Submit</a>
+                <a href="social-post-generator.html">📝 Social Generator</a>
+            </div>
+        </div>
+
+        <!-- Main Action -->
+        <div class="card" style="text-align: center;">
+            <h2><span>🚀</span> Execute Traffic Campaign</h2>
+            <p style="color: #888; margin-bottom: 20px;">Select channels and click once to submit your site everywhere.</p>
+
+            <button class="btn btn-massive" id="executeBtn" onclick="executeCampaign()">
+                🚀 EXECUTE FULL CAMPAIGN
+            </button>
+
+            <div class="progress-section">
+                <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width: 0%"></div></div>
+                <div class="progress-text">
+                    <span id="progressText">Ready to distribute</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+            </div>
+
+            <div id="statusMessage"></div>
+        </div>
+
+        <!-- Channel Selection -->
+        <div class="card">
+            <h2><span>📡</span> Distribution Channels</h2>
+            <p style="color: #888; margin-bottom: 20px;">Select channels to submit to (all selected by default).</p>
+
+            <div class="channels-grid">
+                <!-- Search Engines -->
+                <div class="channel-card active" id="ch-search">
+                    <div class="icon">🔍</div>
+                    <h3>Search Engines</h3>
+                    <p>Submit to Google, Bing, Yahoo, Baidu, Yandex and more. Get indexed fast.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-value">8</div><div class="stat-label">Engines</div></div>
+                        <div class="stat"><div class="stat-value">1hr</div><div class="stat-label">Avg Index</div></div>
+                        <div class="stat"><div class="stat-value">High</div><div class="stat-label">Priority</div></div>
+                    </div>
+                    <label><input type="checkbox" checked onchange="toggleChannel('search')"> Enable Search Engines</label>
+                </div>
+
+                <!-- Directories -->
+                <div class="channel-card active" id="ch-directories">
+                    <div class="icon">📂</div>
+                    <h3>Web Directories</h3>
+                    <p>Submit to 50+ business and general web directories for SEO backlinks.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-value">50+</div><div class="stat-label">Directories</div></div>
+                        <div class="stat"><div class="stat-value">DA 40+</div><div class="stat-label">Quality</div></div>
+                        <div class="stat"><div class="stat-value">Med</div><div class="stat-label">Priority</div></div>
+                    </div>
+                    <label><input type="checkbox" checked onchange="toggleChannel('directories')"> Enable Directories</label>
+                </div>
+
+                <!-- Social Bookmarking -->
+                <div class="channel-card active" id="ch-social">
+                    <div class="icon">🔖</div>
+                    <h3>Social Bookmarking</h3>
+                    <p>Submit to Reddit, Digg, Delicious, StumbleUpon and more.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-value">15+</div><div class="stat-label">Sites</div></div>
+                        <div class="stat"><div class="stat-value">Traffic</div><div class="stat-label">Benefit</div></div>
+                        <div class="stat"><div class="stat-value">Low</div><div class="stat-label">Priority</div></div>
+                    </div>
+                    <label><input type="checkbox" checked onchange="toggleChannel('social')"> Enable Social Bookmarking</label>
+                </div>
+
+                <!-- RSS Aggregators -->
+                <div class="channel-card active" id="ch-rss">
+                    <div class="icon">📰</div>
+                    <h3>RSS Aggregators</h3>
+                    <p>Submit your RSS feed to aggregators for content syndication.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-value">10+</div><div class="stat-label">Aggregators</div></div>
+                        <div class="stat"><div class="stat-value">Syndication</div><div class="stat-label">Benefit</div></div>
+                        <div class="stat"><div class="stat-value">Med</div><div class="stat-label">Priority</div></div>
+                    </div>
+                    <label><input type="checkbox" checked onchange="toggleChannel('rss')"> Enable RSS</label>
+                </div>
+
+                <!-- News Sites -->
+                <div class="channel-card" id="ch-news">
+                    <div class="icon">📰</div>
+                    <h3>News & Press</h3>
+                    <p>Submit press releases to news aggregators and PR sites.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-value">5</div><div class="stat-label">Sites</div></div>
+                        <div class="stat"><div class="stat-value">Authority</div><div class="stat-label">Benefit</div></div>
+                        <div class="stat"><div class="stat-value">High</div><div class="stat-label">Priority</div></div>
+                    </div>
+                    <label><input type="checkbox" onchange="toggleChannel('news')"> Enable News</label>
+                </div>
+
+                <!-- Link Management -->
+                <div class="channel-card" id="ch-links">
+                    <div class="icon">🔗</div>
+                    <h3>Link Management</h3>
+                    <p>Submit to link management and SEO tracking services.</p>
+                    <div class="stats">
+                        <div class="stat"><div class="stat-value">8</div><div class="stat-label">Services</div></div>
+                        <div class="stat"><div class="stat-value">Tracking</div><div class="stat-label">Benefit</div></div>
+                        <div class="stat"><div class="stat-value">Low</div><div class="stat-label">Priority</div></div>
+                    </div>
+                    <label><input type="checkbox" onchange="toggleChannel('links')"> Enable Link Management</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Grid -->
+        <div class="card">
+            <h2><span>⚡</span> Quick Actions</h2>
+            <div class="action-grid">
+                <div class="action-card" onclick="openSearchConsole()">
+                    <div class="icon">🔍</div>
+                    <h4>Google Indexing</h4>
+                    <p>Submit URLs to Google</p>
+                </div>
+                <div class="action-card" onclick="openBingWebmaster()">
+                    <div class="icon">🔵</div>
+                    <h4>Bing Webmaster</h4>
+                    <p>Submit to Bing</p>
+                </div>
+                <div class="action-card" onclick="openDirectories()">
+                    <div class="icon">📂</div>
+                    <h4>Directories</h4>
+                    <p>Submit to 50+ dirs</p>
+                </div>
+                <div class="action-card" onclick="openSocialPosts()">
+                    <div class="icon">📝</div>
+                    <h4>Social Posts</h4>
+                    <p>Generate social content</p>
+                </div>
+                <div class="action-card" onclick="openRSSFeed()">
+                    <div class="icon">📰</div>
+                    <h4>RSS Feed</h4>
+                    <p>View RSS feed</p>
+                </div>
+                <div class="action-card" onclick="pingAll()">
+                    <div class="icon">📡</div>
+                    <h4>Ping All</h4>
+                    <p>Notify all services</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step by Step -->
+        <div class="card">
+            <h2><span>📋</span> Manual Steps (If API Not Available)</h2>
+
+            <div class="tips">
+                <h3>Step 1: Google Search Console (5 minutes)</h3>
+                <ul>
+                    <li>1. Go to <a href="https://search.google.com/search-console" target="_blank" style="color:#ff6666;">Search Console</a></li>
+                    <li>2. Add property: <code>ae16e0d4.affiliate-content-engine-92g.pages.dev</code></li>
+                    <li>3. Verify via DNS or HTML file upload</li>
+                    <li>4. Go to URL Inspection → Submit 20 URLs/day</li>
+                    <li>5. Submit sitemap: <code>/sitemap.xml</code></li>
+                </ul>
+            </div>
+
+            <div class="tips">
+                <h3>Step 2: Bing Webmaster (2 minutes)</h3>
+                <ul>
+                    <li>1. Go to <a href="https://www.bing.com/webmasters" target="_blank" style="color:#ff6666;">Bing Webmaster</a></li>
+                    <li>2. Add your site</li>
+                    <li>3. Import sitemap or submit URLs manually</li>
+                    <li>4. Use API for bulk submission (optional)</li>
+                </ul>
+            </div>
+
+            <div class="tips">
+                <h3>Step 3: Yahoo, Baidu, Yandex (10 minutes)</h3>
+                <ul>
+                    <li>Yahoo: Uses Bing index, just submit to Bing</li>
+                    <li>Baidu: <a href="https://www.baidu.com/search/url_submit.html" style="color:#ff6666;">baidu.com/search/url_submit.html</a></li>
+                    <li>Yandex: <a href="https://webmaster.yandex.com" style="color:#ff6666;">webmaster.yandex.com</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- URLs to Submit -->
+        <div class="card">
+            <h2><span>📃</span> URLs to Submit</h2>
+            <p style="color: #888; margin-bottom: 15px;">Copy this list for manual submission.</p>
+
+            <div style="background: #0a0a0f; border-radius: 12px; padding: 20px; margin: 15px 0;">
+                <div style="color: #888; font-size: 0.9rem; margin-bottom: 10px;">Homepage & Sitemap:</div>
+                <code style="display: block; color: #00ff88; margin-bottom: 15px;">
+                    https://ae16e0d4.affiliate-content-engine-92g.pages.dev/<br>
+                    https://ae16e0d4.affiliate-content-engine-92g.pages.dev/sitemap.xml<br>
+                    https://ae16e0d4.affiliate-content-engine-92g.pages.dev/feed.xml
+                </code>
+
+                <div style="color: #888; font-size: 0.9rem; margin-bottom: 10px;">Top Blog Posts (click to copy):</div>
+                <div id="urlList"></div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="copyAllUrls()">📋 Copy All URLs</button>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev';
+
+        const topUrls = [
+            BASE_URL + '/',
+            BASE_URL + '/blog/helium-10-review-2026.html',
+            BASE_URL + '/blog/best-amazon-seller-tools-2026.html',
+            BASE_URL + '/blog/best-amazon-repricing-tools-2026.html',
+            BASE_URL + '/blog/amazon-competitor-intelligence-guide.html',
+            BASE_URL + '/blog/amazon-seller-automation-guide.html',
+            BASE_URL + '/blog/amazon-ppc-guide-2026.html',
+            BASE_URL + '/blog/amazon-listing-optimization-guide-2026.html',
+            BASE_URL + '/blog/amazon-a9-algorithm-explained.html',
+            BASE_URL + '/blog/amazon-split-testing-guide.html',
+            BASE_URL + '/blog/amazon-brand-registry-guide-2026.html',
+            BASE_URL + '/blog/amazon-keyword-research-guide-2026.html',
+            BASE_URL + '/sitemap.xml',
+            BASE_URL + '/feed.xml'
+        ];
+
+        const channels = {
+            search: true,
+            directories: true,
+            social: true,
+            rss: true,
+            news: false,
+            links: false
+        };
+
+        const totalSteps = 50;
+
+        function init() {
+            renderUrlList();
+            loadProgress();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('trafficCampaignProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                updateProgress(progress.current, progress.total);
+            }
+        }
+
+        function saveProgress(current, total) {
+            localStorage.setItem('trafficCampaignProgress', JSON.stringify({ current, total }));
+        }
+
+        function updateProgress(current, total) {
+            const pct = Math.round((current / total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressPercent').textContent = pct + '%';
+            document.getElementById('progressText').textContent = `Submitted ${current} of ${total}`;
+            saveProgress(current, total);
+        }
+
+        function toggleChannel(channel) {
+            channels[channel] = !channels[channel];
+            const card = document.getElementById('ch-' + channel);
+            if (channels[channel]) card.classList.add('active');
+            else card.classList.remove('active');
+        }
+
+        function renderUrlList() {
+            const container = document.getElementById('urlList');
+            container.innerHTML = topUrls.map(url => `
+                <div style="padding: 8px 0; border-bottom: 1px solid #222;">
+                    <a href="#" onclick="copyUrl('${url}'); return false;" style="color: #888; text-decoration: none; font-size: 0.85rem;">
+                        ${url.replace(BASE_URL, '') || '/'}
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url);
+            showStatus('URL copied: ' + url, 'info');
+        }
+
+        function copyAllUrls() {
+            const allUrls = topUrls.join('\n');
+            navigator.clipboard.writeText(allUrls);
+            showStatus('All URLs copied!', 'success');
+        }
+
+        async function executeCampaign() {
+            const btn = document.getElementById('executeBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Distributing...';
+
+            let step = 0;
+            const total = Object.values(channels).filter(Boolean).length * 10 + 5;
+
+            if (channels.search) {
+                showStatus('Submitting to search engines...', 'pending');
+
+                // Open Google Search Console
+                await new Promise(r => setTimeout(r, 500));
+                window.open('https://search.google.com/search-console/performance?resource_id=https://ae16e0d4.affiliate-content-engine-92g.pages.dev/', '_blank');
+                step += 5;
+                updateProgress(step, total);
+
+                // Open Bing Webmaster
+                await new Promise(r => setTimeout(r, 500));
+                window.open('https://www.bing.com/webmasters', '_blank');
+                step += 3;
+                updateProgress(step, total);
+
+                // Ping sitemap
+                await new Promise(r => setTimeout(r, 300));
+                window.open(`https://www.google.com/ping?sitemap=${encodeURIComponent(BASE_URL + '/sitemap.xml')}`, '_blank');
+                step += 2;
+                updateProgress(step, total);
+            }
+
+            if (channels.directories) {
+                showStatus('Opening directory submission tools...', 'pending');
+                await new Promise(r => setTimeout(r, 500));
+                window.open('directory-submission.html', '_blank');
+                step += 5;
+                updateProgress(step, total);
+            }
+
+            if (channels.social) {
+                showStatus('Opening social content generator...', 'pending');
+                await new Promise(r => setTimeout(r, 500));
+                window.open('social-post-generator.html', '_blank');
+                step += 5;
+                updateProgress(step, total);
+            }
+
+            if (channels.rss) {
+                showStatus('Opening RSS aggregators...', 'pending');
+                await new Promise(r => setTimeout(r, 500));
+                window.open('feed.xml', '_blank');
+                step += 5;
+                updateProgress(step, total);
+            }
+
+            if (channels.news) {
+                showStatus('Opening news sites...', 'pending');
+                await new Promise(r => setTimeout(r, 500));
+                window.open('https://www.google.com/alerts', '_blank');
+                step += 5;
+                updateProgress(step, total);
+            }
+
+            if (channels.links) {
+                showStatus('Opening link management tools...', 'pending');
+                await new Promise(r => setTimeout(r, 500));
+                step += 5;
+                updateProgress(step, total);
+            }
+
+            step = total;
+            updateProgress(step, total);
+
+            btn.disabled = false;
+            btn.textContent = '🚀 EXECUTE FULL CAMPAIGN';
+
+            showStatus('Campaign launched! Complete submissions in opened tabs.', 'success');
+            showConfetti();
+        }
+
+        function openSearchConsole() {
+            window.open('indexing-center.html', '_blank');
+        }
+
+        function openBingWebmaster() {
+            window.open('bing-webmaster.html', '_blank');
+        }
+
+        function openDirectories() {
+            window.open('directory-submission.html', '_blank');
+        }
+
+        function openSocialPosts() {
+            window.open('social-post-generator.html', '_blank');
+        }
+
+        function openRSSFeed() {
+            window.open('feed.xml', '_blank');
+        }
+
+        async function pingAll() {
+            showStatus('Pinging search engines...', 'pending');
+
+            // Ping Google
+            window.open(`https://www.google.com/ping?sitemap=${encodeURIComponent(BASE_URL + '/sitemap.xml')}`, '_blank');
+
+            await new Promise(r => setTimeout(r, 500));
+
+            // Ping Bing
+            window.open(`https://www.bing.com/ping?sitemap=${encodeURIComponent(BASE_URL + '/sitemap.xml')}`, '_blank');
+
+            showStatus('All ping requests sent!', 'success');
+        }
+
+        function showStatus(message, type) {
+            document.getElementById('statusMessage').innerHTML = `
+                <div class="status ${type}">
+                    <span>${type === 'success' ? '✅' : type === 'pending' ? '⏳' : 'ℹ️'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+        }
+
+        function showConfetti() {
+            const colors = ['#ff6666', '#ffd700', '#00ff88', '#00ccff', '#ff88ff'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
