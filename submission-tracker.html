@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Tracker — Track All Your Submissions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a24;
+            --border: #2a2a3a;
+            --text-primary: #ffffff;
+            --text-secondary: #8888a0;
+            --text-muted: #555566;
+            --accent-green: #00ff88;
+            --accent-blue: #4a9eff;
+            --accent-orange: #ff6b35;
+            --accent-yellow: #fbbf24;
+            --accent-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(74, 158, 255, 0.1));
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Progress */
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--bg-hover);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            border-color: var(--text-muted);
+        }
+
+        .tab.active {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+
+        /* Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Item Card */
+        .item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .item-card:hover {
+            border-color: var(--accent-green);
+            transform: translateX(5px);
+        }
+
+        .item-card.completed {
+            opacity: 0.6;
+        }
+
+        .item-card.completed .item-status {
+            background: var(--accent-green);
+        }
+
+        .item-checkbox {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .item-card.completed .item-checkbox {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .item-checkbox::after {
+            content: '✓';
+            color: #000;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .item-card.completed .item-checkbox::after {
+            opacity: 1;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-url {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .item-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-free {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge-paid {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--accent-yellow);
+        }
+
+        .badge-priority {
+            background: rgba(74, 158, 255, 0.15);
+            color: var(--accent-blue);
+        }
+
+        /* Action Button */
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-green), #00cc6a);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Search */
+        .search-box {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .bulk-btn {
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bulk-btn:hover {
+            border-color: var(--accent-green);
+        }
+
+        .bulk-btn.danger {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Category */
+        .category-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-count {
+            background: var(--bg-hover);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📋 Submission Tracker</h1>
+            <p>Track your search engine and directory submissions</p>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="completedCount">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="pendingCount">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="percentComplete">0%</div>
+                    <div class="stat-label">Done</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span>Overall Progress</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <button class="bulk-btn" onclick="markAllComplete()">✅ Mark All Complete</button>
+            <button class="bulk-btn danger" onclick="resetAll()">🔄 Reset All</button>
+            <button class="bulk-btn" onclick="exportList()">📥 Export List</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="filterBy('all')">All</button>
+            <button class="tab" onclick="filterBy('search')">🔍 Search Engines</button>
+            <button class="tab" onclick="filterBy('directory')">📂 Directories</button>
+            <button class="tab" onclick="filterBy('social')">📱 Social</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search directories..." id="searchInput" oninput="filterItems()">
+        </div>
+
+        <!-- Items Grid -->
+        <div class="items-grid" id="itemsGrid"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span>✅</span>
+        <span id="toastText">Saved!</span>
+    </div>
+
+    <script>
+        const SITE_URL = 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev';
+        const SITE_NAME = 'Auto Revenue System';
+
+        // Submission items database
+        const submissionItems = [
+            // Search Engines (Priority)
+            { id: 1, name: 'Google Search Console', url: 'https://search.google.com/search-console', type: 'search', priority: 'high', free: true, note: 'Submit sitemap.xml' },
+            { id: 2, name: 'Bing Webmaster', url: 'https://www.bing.com/webmasters', type: 'search', priority: 'high', free: true, note: 'Submit sitemap.xml' },
+            { id: 3, name: 'Google Analytics', url: 'https://analytics.google.com', type: 'search', priority: 'medium', free: true, note: 'Track traffic' },
+            { id: 4, name: 'Yandex Webmaster', url: 'https://webmaster.yandex.com', type: 'search', priority: 'medium', free: true, note: 'For Russian traffic' },
+            { id: 5, name: 'Baidu Webmaster', url: 'https://zhanzhang.baidu.com', type: 'search', priority: 'low', free: true, note: 'For Chinese traffic' },
+            { id: 6, name: 'Naver Webmaster', url: 'https://webmastertools.search.naver.com', type: 'search', priority: 'low', free: true, note: 'For Korean traffic' },
+
+            // Directories - High Priority Free
+            { id: 10, name: 'DMOZ', url: 'https://www.dmoz.org', type: 'directory', priority: 'high', free: true, note: 'Premium directory' },
+            { id: 11, name: 'StartNext', url: 'https://startnext.com', type: 'directory', priority: 'medium', free: true, note: 'Startup directory' },
+            { id: 12, name: 'Startpagina', url: 'https://www.startpagina.nl', type: 'directory', priority: 'low', free: true, note: 'Dutch directory' },
+            { id: 13, name: 'WOT', url: 'https://mywot.com', type: 'directory', priority: 'medium', free: true, note: 'Website trust rating' },
+            { id: 14, name: 'Google Business', url: 'https://business.google.com', type: 'directory', priority: 'high', free: true, note: 'Local SEO boost' },
+            { id: 15, name: 'Bing Places', url: 'https://www.bing.com/local', type: 'directory', priority: 'high', free: true, note: 'Bing local listing' },
+
+            // Directories - General
+            { id: 20, name: 'Jasmine Directory', url: 'https://www.jasminedirectory.com', type: 'directory', priority: 'medium', free: true },
+            { id: 21, name: 'Moz Directory', url: 'https://moz.com/community.connect', type: 'directory', priority: 'medium', free: true },
+            { id: 22, name: 'Botefish', url: 'https://www.botefish.com', type: 'directory', priority: 'low', free: true },
+            { id: 23, name: 'Webmaster World', url: 'https://www.webmasterworld.com', type: 'directory', priority: 'low', free: true },
+            { id: 24, name: 'Gimpsy', url: 'https://www.gimpsy.com', type: 'directory', priority: 'low', free: true },
+            { id: 25, name: 'StartAhead', url: 'https://www.startahead.com', type: 'directory', priority: 'low', free: true },
+
+            // Blog Directories
+            { id: 30, name: 'Blogarama', url: 'https://www.blogarama.com', type: 'directory', priority: 'medium', free: true },
+            { id: 31, name: 'BlogCatalog', url: 'https://www.blogcatalog.com', type: 'directory', priority: 'medium', free: true },
+            { id: 32, name: 'BlogSearchEngine', url: 'https://www.blogsearchengine.com', type: 'directory', priority: 'low', free: true },
+            { id: 33, name: 'Technorati', url: 'https://technorati.com', type: 'directory', priority: 'low', free: true },
+
+            // Social Bookmarking
+            { id: 40, name: 'Pinterest', url: 'https://pinterest.com', type: 'social', priority: 'high', free: true },
+            { id: 41, name: 'Reddit', url: 'https://reddit.com', type: 'social', priority: 'high', free: true },
+            { id: 42, name: 'Twitter', url: 'https://twitter.com', type: 'social', priority: 'high', free: true },
+            { id: 43, name: 'LinkedIn', url: 'https://linkedin.com', type: 'social', priority: 'high', free: true },
+            { id: 44, name: 'Medium', url: 'https://medium.com', type: 'social', priority: 'medium', free: true },
+            { id: 45, name: 'Tumblr', url: 'https://tumblr.com', type: 'social', priority: 'medium', free: true },
+            { id: 46, name: 'StumbleUpon', url: 'https://stumbleupon.com', type: 'social', priority: 'low', free: true },
+            { id: 47, name: 'Digg', url: 'https://digg.com', type: 'social', priority: 'low', free: true },
+            { id: 48, name: 'Del.icio.us', url: 'https://del.icio.us', type: 'social', priority: 'low', free: true },
+
+            // Business Directories
+            { id: 50, name: 'Yelp', url: 'https://www.yelp.com', type: 'directory', priority: 'medium', free: true },
+            { id: 51, name: 'Yellow Pages', url: 'https://www.yellowpages.com', type: 'directory', priority: 'medium', free: true },
+            { id: 52, name: 'Manta', url: 'https://www.manta.com', type: 'directory', priority: 'medium', free: true },
+            { id: 53, name: 'Angie\'s List', url: 'https://www.angieslist.com', type: 'directory', priority: 'low', free: true },
+        ];
+
+        let completedItems = new Set();
+        let currentFilter = 'all';
+
+        // Initialize
+        function init() {
+            loadState();
+            renderItems();
+            updateStats();
+        }
+
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('submissionTracker');
+            if (saved) {
+                completedItems = new Set(JSON.parse(saved));
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('submissionTracker', JSON.stringify([...completedItems]));
+        }
+
+        // Render items
+        function renderItems() {
+            const grid = document.getElementById('itemsGrid');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = submissionItems;
+
+            // Apply type filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(item => item.type === currentFilter);
+            }
+
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(item =>
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    (item.note && item.note.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Group by type
+            const grouped = {};
+            filtered.forEach(item => {
+                if (!grouped[item.type]) grouped[item.type] = [];
+                grouped[item.type].push(item);
+            });
+
+            let html = '';
+
+            // Search Engines
+            if (grouped.search && grouped.search.length > 0) {
+                html += `<div class="category-header">🔍 Search Engines <span class="category-count">${grouped.search.length}</span></div>`;
+                html += `<div class="items-grid">`;
+                grouped.search.forEach(item => {
+                    html += renderItem(item);
+                });
+                html += `</div>`;
+            }
+
+            // Directories
+            if (grouped.directory && grouped.directory.length > 0) {
+                html += `<div class="category-header">📂 Directories <span class="category-count">${grouped.directory.length}</span></div>`;
+                html += `<div class="items-grid">`;
+                grouped.directory.forEach(item => {
+                    html += renderItem(item);
+                });
+                html += `</div>`;
+            }
+
+            // Social
+            if (grouped.social && grouped.social.length > 0) {
+                html += `<div class="category-header">📱 Social Bookmarking <span class="category-count">${grouped.social.length}</span></div>`;
+                html += `<div class="items-grid">`;
+                grouped.social.forEach(item => {
+                    html += renderItem(item);
+                });
+                html += `</div>`;
+            }
+
+            if (filtered.length === 0) {
+                html = `<div style="text-align: center; padding: 3rem; color: var(--text-muted);">No items found</div>`;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // Render single item
+        function renderItem(item) {
+            const isCompleted = completedItems.has(item.id);
+            const priorityClass = item.priority === 'high' ? 'badge-priority' : item.priority === 'medium' ? 'badge-free' : '';
+
+            return `
+                <div class="item-card ${isCompleted ? 'completed' : ''}" onclick="toggleItem(${item.id})">
+                    <div class="item-checkbox"></div>
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-url">${item.url.replace('https://', '')}</div>
+                        ${item.note ? `<div class="item-url">${item.note}</div>` : ''}
+                    </div>
+                    <div class="item-meta">
+                        ${item.free ? '<span class="item-badge badge-free">Free</span>' : '<span class="item-badge badge-paid">Paid</span>'}
+                        ${item.priority === 'high' ? '<span class="item-badge badge-priority">Priority</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Toggle item
+        function toggleItem(id) {
+            if (completedItems.has(id)) {
+                completedItems.delete(id);
+            } else {
+                completedItems.add(id);
+            }
+            saveState();
+            renderItems();
+            updateStats();
+            showToast(completedItems.has(id) ? 'Marked as done!' : 'Marked as pending');
+        }
+
+        // Filter by type
+        function filterBy(type) {
+            currentFilter = type;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.includes(type) ||
+                    (type === 'all' && tab.textContent === 'All'));
+            });
+            renderItems();
+        }
+
+        // Filter items (search)
+        function filterItems() {
+            renderItems();
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = submissionItems.length;
+            const completed = completedItems.size;
+            const pending = total - completed;
+            const percent = Math.round((completed / total) * 100);
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('percentComplete').textContent = percent + '%';
+            document.getElementById('progressText').textContent = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // Mark all complete
+        function markAllComplete() {
+            submissionItems.forEach(item => completedItems.add(item.id));
+            saveState();
+            renderItems();
+            updateStats();
+            showToast('All items marked as complete!');
+        }
+
+        // Reset all
+        function resetAll() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                completedItems.clear();
+                saveState();
+                renderItems();
+                updateStats();
+                showToast('All progress reset!');
+            }
+        }
+
+        // Export list
+        function exportList() {
+            let content = '# Submission Tracker Export\n\n';
+            content += `Site: ${SITE_URL}\n`;
+            content += `Date: ${new Date().toLocaleDateString()}\n\n`;
+            content += `## Completed (${completedItems.size})\n\n`;
+
+            submissionItems.forEach(item => {
+                const status = completedItems.has(item.id) ? '✅' : '⬜';
+                content += `${status} ${item.name} - ${item.url}\n`;
+            });
+
+            content += `\n## Pending (${submissionItems.length - completedItems.size})\n\n`;
+            submissionItems.filter(item => !completedItems.has(item.id)).forEach(item => {
+                content += `⬜ ${item.name} - ${item.url}\n`;
+            });
+
+            navigator.clipboard.writeText(content);
+            showToast('List copied to clipboard!');
+        }
+
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
