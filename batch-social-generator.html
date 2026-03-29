@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Social Generator — All 36 Articles in One Click</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a24;
+            --border: #2a2a3a;
+            --text-primary: #ffffff;
+            --text-secondary: #8888a0;
+            --text-muted: #555566;
+            --accent-green: #00ff88;
+            --accent-blue: #4a9eff;
+            --accent-orange: #ff6b35;
+            --accent-pink: #ec4899;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(74, 158, 255, 0.1));
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Generate All Button */
+        .generate-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-green), #00cc6a);
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .generate-all-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .generate-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            border-color: var(--text-muted);
+        }
+
+        .tab.active {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+
+        /* Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Post Card */
+        .post-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .post-card:hover {
+            border-color: var(--accent-green);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-hover);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .post-platform {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .post-platform.twitter { background: rgba(29, 161, 242, 0.2); }
+        .post-platform.reddit { background: rgba(255, 69, 0, 0.2); }
+        .post-platform.linkedin { background: rgba(0, 119, 181, 0.2); }
+        .post-platform.threads { background: rgba(236, 72, 153, 0.2); }
+        .post-platform.pinterest { background: rgba(230, 0, 35, 0.2); }
+
+        .post-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .post-article {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .post-content {
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .post-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, var(--bg-card));
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-actions button {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-copy {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-copy:hover {
+            background: var(--border);
+        }
+
+        .btn-share {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        .btn-share:hover {
+            transform: scale(1.02);
+        }
+
+        /* Copy indicator */
+        .copied {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent-green);
+            color: #000;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .copied.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Progress */
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        /* Platform colors */
+        .platform-twitter { color: #1DA1F2; }
+        .platform-reddit { color: #FF4500; }
+        .platform-linkedin { color: #0077B5; }
+        .platform-threads { color: #EC4899; }
+        .platform-pinterest { color: #E60023; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Article selector */
+        .article-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Bulk actions */
+        .bulk-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .bulk-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bulk-btn:hover {
+            border-color: var(--accent-green);
+        }
+
+        .bulk-btn.primary {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Batch Social Post Generator</h1>
+            <p>Generate ready-to-post content for all 36 articles. One click = all platforms.</p>
+
+            <button class="generate-all-btn" id="generateAllBtn" onclick="generateAllPosts()">
+                <span>🚀</span>
+                Generate All Posts (36 Articles × 4 Platforms)
+            </button>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-value" id="articleCount">36</div>
+                    <div class="stat-label">Articles</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="postCount">0</div>
+                    <div class="stat-label">Posts Generated</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="copiedCount">0</div>
+                    <div class="stat-label">Copied</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+        </header>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <button class="bulk-btn" onclick="generateAllPosts()">
+                🔄 Generate All (36 articles)
+            </button>
+            <button class="bulk-btn" onclick="copyAllTwitter()">
+                𝕏 Copy All Twitter
+            </button>
+            <button class="bulk-btn" onclick="copyAllReddit()">
+                🍕 Copy All Reddit
+            </button>
+            <button class="bulk-btn" onclick="copyAllLinkedIn()">
+                💼 Copy All LinkedIn
+            </button>
+            <button class="bulk-btn" onclick="copyAllThreads()">
+                🧵 Copy All Threads
+            </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="filterPosts('all')">All Posts</button>
+            <button class="tab" onclick="filterPosts('twitter')">𝕏 Twitter</button>
+            <button class="tab" onclick="filterPosts('reddit')">🍕 Reddit</button>
+            <button class="tab" onclick="filterPosts('linkedin')">💼 LinkedIn</button>
+            <button class="tab" onclick="filterPosts('threads')">🧵 Threads</button>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="posts-grid" id="postsGrid">
+            <div class="empty-state">
+                <div class="empty-state-icon">📝</div>
+                <p>Click "Generate All Posts" to create content for all articles.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copied Toast -->
+    <div class="copied" id="copiedToast">Copied to clipboard!</div>
+
+    <script>
+        const SITE_URL = 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev';
+
+        // Articles database - All 36 blog articles
+        const articles = [
+            { id: 1, title: 'Amazon PPC Guide 2026', url: '/blog/amazon-ppc-guide-2026.html', category: 'Advertising' },
+            { id: 2, title: 'Helium 10 vs Jungle Scout', url: '/blog/helium-10-vs-jungle-scout.html', category: 'Tools' },
+            { id: 3, title: 'Buy Box Strategy Guide', url: '/blog/buy-box-strategy-amazon.html', category: 'Strategy' },
+            { id: 4, title: 'FBA Calculator Tool', url: '/blog/amazon-fba-calculator.html', category: 'Tools' },
+            { id: 5, title: 'Amazon Repricing Tools 2026', url: '/blog/best-amazon-repricing-tools-2026.html', category: 'Tools' },
+            { id: 6, title: 'Competitor Intelligence Guide', url: '/blog/amazon-competitor-intelligence-guide.html', category: 'Strategy' },
+            { id: 7, title: 'Keepa vs CamelCamelCamel', url: '/blog/keepa-vs-camelcamelcamel.html', category: 'Tools' },
+            { id: 8, title: 'Amazon Seller Success Stories', url: '/blog/amazon-seller-success-stories.html', category: 'Case Studies' },
+            { id: 9, title: 'Amazon Inventory Management', url: '/blog/amazon-inventory-management-software.html', category: 'Operations' },
+            { id: 10, title: 'Sponsored Products Strategy', url: '/blog/amazon-sponsored-products-strategy.html', category: 'Advertising' },
+            { id: 11, title: 'Product Launch Checklist', url: '/blog/amazon-product-launch-checklist.html', category: 'Strategy' },
+            { id: 12, title: 'Review Management Strategy', url: '/blog/amazon-review-management-strategy.html', category: 'Operations' },
+            { id: 13, title: 'Seasonal Pricing Strategy', url: '/blog/amazon-seasonal-pricing-strategy.html', category: 'Strategy' },
+            { id: 14, title: 'Seller Automation Guide', url: '/blog/amazon-seller-automation-guide.html', category: 'Operations' },
+            { id: 15, title: 'Price Tracking Tools 2026', url: '/blog/amazon-price-tracking-tools-2026.html', category: 'Tools' },
+            { id: 16, title: 'FBA Sellers Complete Guide', url: '/blog/fba-sellers-complete-guide.html', category: 'Guide' },
+            { id: 17, title: 'Amazon A9 Algorithm Explained', url: '/blog/amazon-a9-algorithm-explained.html', category: 'Strategy' },
+            { id: 18, title: 'FBA Fees Guide 2026', url: '/blog/amazon-fba-fees-2026.html', category: 'Guide' },
+            { id: 19, title: 'Keyword Research Guide 2026', url: '/blog/amazon-keyword-research-guide-2026.html', category: 'Strategy' },
+            { id: 20, title: 'Product Research Tools', url: '/blog/best-amazon-product-research-tools.html', category: 'Tools' },
+            { id: 21, title: 'Split Testing Guide', url: '/blog/amazon-split-testing-guide.html', category: 'Strategy' },
+            { id: 22, title: 'Sales Data Analysis Guide', url: '/blog/amazon-sales-data-analysis-guide-2026.html', category: 'Analytics' },
+            { id: 23, title: 'Account Health Guide 2026', url: '/blog/amazon-account-health-guide-2026.html', category: 'Operations' },
+            { id: 24, title: 'Listing Optimization Guide', url: '/blog/amazon-listing-optimization-guide-2026.html', category: 'Strategy' },
+            { id: 25, title: 'Brand Registry Guide 2026', url: '/blog/amazon-brand-registry-guide-2026.html', category: 'Strategy' },
+            { id: 26, title: 'How to Sell on Amazon 2026', url: '/blog/how-to-sell-on-amazon-2026.html', category: 'Guide' },
+            { id: 27, title: 'Helium 10 Review 2026', url: '/blog/helium-10-review-2026.html', category: 'Tools' },
+            { id: 28, title: 'Jungle Scout Alternatives 2026', url: '/blog/jungle-scout-alternatives-2026.html', category: 'Tools' },
+            { id: 29, title: 'Best Seller Tools 2026', url: '/blog/best-amazon-seller-tools-2026.html', category: 'Tools' },
+            { id: 30, title: 'Competitor Analysis Tools 2026', url: '/blog/best-amazon-competitor-analysis-tools-2026.html', category: 'Tools' },
+            { id: 31, title: 'Repricing Strategy 2026', url: '/blog/amazon-repricing-strategy-2026.html', category: 'Strategy' },
+            { id: 32, title: 'Inventory Management Guide 2026', url: '/blog/amazon-inventory-management-guide-2026.html', category: 'Operations' },
+            { id: 33, title: 'Returns Management Strategy', url: '/blog/amazon-returns-management-strategy.html', category: 'Operations' },
+            { id: 34, title: 'Seller Dashboard Guide', url: '/blog/amazon-seller-dashboard-guide.html', category: 'Analytics' },
+            { id: 35, title: 'Guest Post Outreach', url: '/blog/guest-post-outreach.html', category: 'Marketing' },
+            { id: 36, title: 'Link in Bio', url: '/blog/link-in-bio.html', category: 'Marketing' }
+        ];
+
+        // Post templates
+        const templates = {
+            twitter: {
+                hooks: [
+                    "I analyzed 1,000 Amazon sellers and found something surprising...",
+                    "The #1 mistake Amazon sellers make?",
+                    "Hot take: Most Amazon sellers are leaving money on the table.",
+                    "I spent 3 months researching Amazon {topic}. Here's what I found:",
+                    "POV: You're an Amazon seller who just discovered {topic}.",
+                ],
+                bodies: [
+                    "Most sellers ignore this. Here's why they shouldn't:",
+                    "Competitors are winning because of this one thing.",
+                    "The average seller loses ${amount}/month to this problem.",
+                    "This changed everything for my Amazon business.",
+                ],
+                ctas: [
+                    "Save this for later",
+                    "Follow for more Amazon seller tips",
+                    "Drop a 🔁 if you're an Amazon seller",
+                    "What's your biggest challenge? 👇",
+                ]
+            },
+            reddit: {
+                titles: [
+                    "[Discussion] What's your strategy for {topic}?",
+                    "[Guide] How I improved my {topic} by {metric}%",
+                    "[Tool] Free resource for {topic}",
+                    "[Case Study] My journey with {topic}",
+                ],
+                bodies: [
+                    "Been researching {topic} and wanted to share some findings.\n\n**Key Stats:**\n- {stat1}\n- {stat2}\n- {stat3}\n\nCurious what strategies others are using?",
+                    "I put together a complete guide on {topic} after analyzing what works.\n\n**What I Found:**\n- {finding1}\n- {finding2}\n- {finding3}\n\nHappy to answer questions!",
+                ]
+            },
+            linkedin: {
+                hooks: [
+                    "Most e-commerce companies are losing revenue they don't even know about.",
+                    "Here's an uncomfortable truth about Amazon seller profitability.",
+                    "After analyzing 1,000+ seller accounts, I found the #1 profit leak.",
+                ],
+                bodies: [
+                    "It's called '{problem}' — waiting until you see a change before adjusting.\n\nBy then, you've already lost:\n• Position\n• Ranking\n• Customer value\n\nThe solution isn't more monitoring. It's automated intelligence.",
+                ]
+            },
+            threads: {
+                hooks: [
+                    "🧵 THREAD: How to master {topic} in 2026\n\n",
+                    "Everything you need to know about {topic}:\n\n🧵\n\n",
+                ],
+                points: [
+                    "The sellers winning on Amazon right now aren't the ones with the best products.\n\nThey're the ones with the best {topic}.\n\n",
+                    "Manual {topic} is dead. Here's why:\n\n• {consequence1}\n• {consequence2}\n• {consequence3}\n\n",
+                    "Automated {topic} catches every change and adjusts instantly.\n\nThe math:\n• {metric1}\n• {metric2}\n• {metric3}\n\n",
+                    "What's your current setup? Drop it below 👇",
+                ]
+            }
+        };
+
+        // Generated posts storage
+        let allPosts = [];
+        let currentFilter = 'all';
+
+        // Generate all posts
+        function generateAllPosts() {
+            const btn = document.getElementById('generateAllBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> Generating...';
+
+            allPosts = [];
+
+            articles.forEach((article, index) => {
+                setTimeout(() => {
+                    const posts = generatePostsForArticle(article);
+                    allPosts = allPosts.concat(posts);
+
+                    if (index === articles.length - 1) {
+                        renderPosts();
+                        btn.disabled = false;
+                        btn.innerHTML = '<span>🚀</span> Generate All Posts (36 Articles × 4 Platforms)';
+                        document.getElementById('postCount').textContent = allPosts.length;
+                        document.getElementById('progressFill').style.width = '100%';
+                        showToast('Generated ' + allPosts.length + ' posts!');
+                    } else {
+                        document.getElementById('progressFill').style.width = ((index + 1) / articles.length * 100) + '%';
+                    }
+                }, index * 50);
+            });
+        }
+
+        // Generate posts for single article
+        function generatePostsForArticle(article) {
+            const posts = [];
+            const url = SITE_URL + article.url;
+
+            // Twitter
+            posts.push({
+                platform: 'twitter',
+                article: article.title,
+                content: generateTwitterPost(article),
+                shareUrl: `https://twitter.com/compose/tweet?text=${encodeURIComponent(generateTwitterPost(article))}`
+            });
+
+            // Reddit
+            posts.push({
+                platform: 'reddit',
+                article: article.title,
+                content: generateRedditPost(article),
+                shareUrl: 'https://reddit.com/r/AmazonSeller/submit'
+            });
+
+            // LinkedIn
+            posts.push({
+                platform: 'linkedin',
+                article: article.title,
+                content: generateLinkedInPost(article),
+                shareUrl: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+            });
+
+            // Threads
+            posts.push({
+                platform: 'threads',
+                article: article.title,
+                content: generateThreadsPost(article),
+                shareUrl: 'https://threads.net/compose'
+            });
+
+            return posts;
+        }
+
+        // Generate Twitter post
+        function generateTwitterPost(article) {
+            const hook = templates.twitter.hooks[Math.floor(Math.random() * templates.twitter.hooks.length)]
+                .replace('{topic}', article.category.toLowerCase());
+            const body = templates.twitter.bodies[Math.floor(Math.random() * templates.twitter.bodies.length)];
+            const cta = templates.twitter.ctas[Math.floor(Math.random() * templates.twitter.ctas.length)];
+            const url = SITE_URL + article.url;
+
+            return `${hook}\n\n${body}\n\n${cta}\n\n${url}`;
+        }
+
+        // Generate Reddit post
+        function generateRedditPost(article) {
+            const title = templates.reddit.titles[Math.floor(Math.random() * templates.reddit.titles.length)]
+                .replace('{topic}', article.title.replace('Amazon ', ''));
+            const body = templates.reddit.bodies[Math.floor(Math.random() * templates.reddit.bodies.length)]
+                .replace('{topic}', article.title.replace('Amazon ', ''))
+                .replace('{stat1}', '67% of sellers use manual processes')
+                .replace('{stat2}', 'Average loss: $847/month')
+                .replace('{stat3}', 'Top performers automate everything')
+                .replace('{finding1}', article.category + ' is essential for scaling')
+                .replace('{finding2}', 'Automation saves 20+ hours/week')
+                .replace('{finding3}', 'ROI is measurable within 30 days');
+            const url = SITE_URL + article.url;
+
+            return `${title}\n\n${body}\n\n📖 Read the full guide: ${url}`;
+        }
+
+        // Generate LinkedIn post
+        function generateLinkedInPost(article) {
+            const hook = templates.linkedin.hooks[Math.floor(Math.random() * templates.linkedin.hooks.length)];
+            const body = templates.linkedin.bodies[Math.floor(Math.random() * templates.linkedin.bodies.length)]
+                .replace('{problem}', article.category.toLowerCase());
+            const url = SITE_URL + article.url;
+
+            return `${hook}\n\n${body}\n\n📖 Full breakdown: ${url}\n\n#Amazon #Ecommerce #${article.category.replace(' ', '')} #Seller`;
+        }
+
+        // Generate Threads post
+        function generateThreadsPost(article) {
+            const hook = templates.threads.hooks[Math.floor(Math.random() * templates.threads.hooks.length)]
+                .replace('{topic}', article.title.replace('Amazon ', ''));
+            let content = hook;
+            content += `1/ ${article.title}\n\nWhy it matters for your Amazon business:\n\n`;
+            content += `2/ The data shows: Sellers who focus on ${article.category.toLowerCase()} outperform others by 3x.\n\n`;
+            content += `3/ Key strategies include:\n• ${getKeyPoint(article)}\n• Automation where possible\n• Continuous optimization\n\n`;
+            content += `4/ Full guide with actionable steps: ${SITE_URL}${article.url}`;
+            return content;
+        }
+
+        // Get key point based on article
+        function getKeyPoint(article) {
+            const points = {
+                'Advertising': 'Use PPC strategically for product launches',
+                'Tools': 'Choose tools that save time and provide data',
+                'Strategy': 'Build a defensible competitive moat',
+                'Operations': 'Streamline workflows for scale',
+                'Case Studies': 'Learn from what others have done',
+                'Guide': 'Follow proven frameworks'
+            };
+            return points[article.category] || 'Focus on the fundamentals first';
+        }
+
+        // Render posts
+        function renderPosts() {
+            const grid = document.getElementById('postsGrid');
+            const filteredPosts = currentFilter === 'all'
+                ? allPosts
+                : allPosts.filter(p => p.platform === currentFilter);
+
+            if (filteredPosts.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>Click "Generate All Posts" to create content for all articles.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredPosts.map((post, index) => `
+                <div class="post-card" data-platform="${post.platform}">
+                    <div class="post-header">
+                        <div class="post-platform ${post.platform}">
+                            ${getPlatformIcon(post.platform)}
+                        </div>
+                        <div>
+                            <div class="post-title platform-${post.platform}">${post.platform.charAt(0).toUpperCase() + post.platform.slice(1)} Post</div>
+                            <div class="post-article">${post.article}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        ${post.content.replace(/\n/g, '<br>')}
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-copy" onclick="copyPost(${index})">📋 Copy</button>
+                        <button class="btn-share" onclick="sharePost(${index})">${getShareText(post.platform)}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get platform icon
+        function getPlatformIcon(platform) {
+            const icons = {
+                twitter: '𝕏',
+                reddit: '🍕',
+                linkedin: '💼',
+                threads: '🧵',
+                pinterest: '📌'
+            };
+            return icons[platform] || '📝';
+        }
+
+        // Get share text
+        function getShareText(platform) {
+            const texts = {
+                twitter: '𝕏 Share',
+                reddit: '🍕 Post',
+                linkedin: '💼 Share',
+                threads: '🧵 Share',
+                pinterest: '📌 Pin'
+            };
+            return texts[platform] || 'Share';
+        }
+
+        // Copy post
+        function copyPost(index) {
+            const post = allPosts[index];
+            navigator.clipboard.writeText(post.content).then(() => {
+                showToast('Copied to clipboard!');
+                const count = parseInt(document.getElementById('copiedCount').textContent) + 1;
+                document.getElementById('copiedCount').textContent = count;
+            });
+        }
+
+        // Share post
+        function sharePost(index) {
+            const post = allPosts[index];
+            if (post.platform === 'reddit') {
+                const title = encodeURIComponent(post.content.split('\n')[0]);
+                const url = encodeURIComponent(SITE_URL + '/blog/');
+                window.open(`https://reddit.com/r/AmazonSeller/submit?title=${title}&url=${url}`, '_blank');
+            } else if (post.platform === 'twitter') {
+                window.open(post.shareUrl, '_blank');
+            } else if (post.platform === 'linkedin') {
+                navigator.clipboard.writeText(post.content);
+                showToast('Content copied! Paste it on LinkedIn.');
+            } else if (post.platform === 'threads') {
+                navigator.clipboard.writeText(post.content);
+                showToast('Content copied! Paste it on Threads.');
+            }
+        }
+
+        // Filter posts
+        function filterPosts(platform) {
+            currentFilter = platform;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.toLowerCase().includes(platform) ||
+                    (platform === 'all' && tab.textContent === 'All Posts'));
+            });
+            renderPosts();
+        }
+
+        // Copy all by platform
+        function copyAllTwitter() {
+            const twitterPosts = allPosts.filter(p => p.platform === 'twitter');
+            const content = twitterPosts.map(p => `=== ${p.article} ===\n${p.content}`).join('\n\n---\n\n');
+            navigator.clipboard.writeText(content);
+            showToast(`Copied ${twitterPosts.length} Twitter posts!`);
+        }
+
+        function copyAllReddit() {
+            const redditPosts = allPosts.filter(p => p.platform === 'reddit');
+            const content = redditPosts.map(p => `=== ${p.article} ===\n${p.content}`).join('\n\n---\n\n');
+            navigator.clipboard.writeText(content);
+            showToast(`Copied ${redditPosts.length} Reddit posts!`);
+        }
+
+        function copyAllLinkedIn() {
+            const linkedinPosts = allPosts.filter(p => p.platform === 'linkedin');
+            const content = linkedinPosts.map(p => `=== ${p.article} ===\n${p.content}`).join('\n\n---\n\n');
+            navigator.clipboard.writeText(content);
+            showToast(`Copied ${linkedinPosts.length} LinkedIn posts!`);
+        }
+
+        function copyAllThreads() {
+            const threadsPosts = allPosts.filter(p => p.platform === 'threads');
+            const content = threadsPosts.map(p => `=== ${p.article} ===\n${p.content}`).join('\n\n---\n\n');
+            navigator.clipboard.writeText(content);
+            showToast(`Copied ${threadsPosts.length} Threads posts!`);
+        }
+
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('copiedToast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Update article count
+        document.getElementById('articleCount').textContent = articles.length;
+    </script>
+</body>
+</html>
