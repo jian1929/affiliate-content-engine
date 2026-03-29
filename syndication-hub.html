@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Syndication Hub — Auto Company</title>
+    <meta name="description" content="Syndicate content to Dev.to, Hashnode, Medium, and more for maximum traffic">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; padding: 60px 0; border-bottom: 1px solid #333; margin-bottom: 40px; }
+        h1 { font-size: 2.5rem; margin-bottom: 15px; background: linear-gradient(135deg, #00ff88, #00cc6a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: #888; font-size: 1.1rem; margin-bottom: 30px; }
+        .stats { display: flex; justify-content: center; gap: 40px; margin-top: 30px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 2rem; color: #00ff88; font-weight: bold; }
+        .stat-label { color: #888; font-size: 0.9rem; margin-top: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .card { background: #1a1a2e; border-radius: 16px; padding: 30px; border: 1px solid #333; transition: all 0.3s; }
+        .card:hover { border-color: #00ff88; transform: translateY(-5px); }
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .card-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .devto { background: #0a0a0f; }
+        .hashnode { background: #2962ff; }
+        .medium { background: #000; }
+        .substack { background: #ff671d; }
+        .card-title { font-size: 1.3rem; color: #fff; }
+        .card-desc { color: #888; margin-bottom: 20px; line-height: 1.6; }
+        .card-stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .card-stat { text-align: center; flex: 1; padding: 10px; background: #0a0a0f; border-radius: 8px; }
+        .card-stat-value { color: #00ff88; font-size: 1.2rem; font-weight: bold; }
+        .card-stat-label { color: #888; font-size: 0.8rem; margin-top: 3px; }
+        .btn { display: inline-block; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s; margin-right: 10px; margin-bottom: 10px; }
+        .btn-primary { background: #00ff88; color: #000; }
+        .btn-primary:hover { background: #00cc6a; transform: translateY(-2px); }
+        .btn-secondary { background: transparent; border: 1px solid #00ff88; color: #00ff88; }
+        .btn-secondary:hover { background: rgba(0,255,136,0.1); }
+        .setup-section { background: #1a1a2e; border-radius: 16px; padding: 30px; margin-top: 40px; }
+        .setup-title { font-size: 1.3rem; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .setup-title::before { content: '📋'; }
+        .setup-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .setup-step { background: #0a0a0f; padding: 20px; border-radius: 12px; }
+        .setup-step-title { color: #00ff88; font-weight: bold; margin-bottom: 10px; }
+        .setup-step-desc { color: #888; font-size: 0.9rem; line-height: 1.6; }
+        code { background: #2a2a4e; padding: 2px 8px; border-radius: 4px; color: #00ff88; font-family: monospace; }
+        .articles-section { margin-top: 40px; }
+        .section-title { font-size: 1.5rem; color: #fff; margin-bottom: 20px; }
+        .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .article-card { background: #1a1a2e; border-radius: 12px; padding: 20px; border: 1px solid #333; }
+        .article-title { color: #fff; margin-bottom: 10px; font-size: 1rem; }
+        .article-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { background: #0a0a0f; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; color: #888; }
+        footer { text-align: center; padding: 40px; color: #666; margin-top: 60px; border-top: 1px solid #333; }
+        footer a { color: #00ff88; text-decoration: none; }
+        .hero { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,255,0.1)); border-radius: 16px; margin-bottom: 40px; }
+        .hero-title { font-size: 1.5rem; color: #fff; margin-bottom: 10px; }
+        .hero-desc { color: #888; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Content Syndication Hub</h1>
+            <p class="subtitle">Syndicate your articles to multiple platforms for maximum traffic</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">44</div>
+                    <div class="stat-label">Articles Ready</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Platforms</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">144</div>
+                    <div class="stat-label">Social Posts</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="hero">
+            <div class="hero-title">Multiply Your Traffic 10x</div>
+            <div class="hero-desc">Post once, syndicate everywhere. Each platform brings new readers.</div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon devto">DEV</div>
+                    <div class="card-title">Dev.to</div>
+                </div>
+                <p class="card-desc">Developer community with 10M+ monthly visitors. Great for technical Amazon seller content.</p>
+                <div class="card-stats">
+                    <div class="card-stat">
+                        <div class="card-stat-value">High</div>
+                        <div class="card-stat-label">Traffic</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-value">5</div>
+                        <div class="card-stat-label">Articles Ready</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="https://dev.to/new/story" target="_blank" class="btn btn-primary">New Story</a>
+                    <a href="DEVTO_CONTENT_PACK.md" class="btn btn-secondary">View Pack</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon hashnode">#</div>
+                    <div class="card-title">Hashnode</div>
+                </div>
+                <p class="card-desc">Fast-growing developer blogging platform with strong SEO. Auto-distribution to other blogs.</p>
+                <div class="card-stats">
+                    <div class="card-stat">
+                        <div class="card-stat-value">High</div>
+                        <div class="card-stat-label">SEO Value</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-value">5</div>
+                        <div class="card-stat-label">Articles Ready</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="https://hashnode.com/new/story" target="_blank" class="btn btn-primary">New Story</a>
+                    <a href="HASHNODE_CONTENT_PACK.md" class="btn btn-secondary">View Pack</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon medium">M</div>
+                    <div class="card-title">Medium</div>
+                </div>
+                <p class="card-desc">Premium publishing platform with 100M+ readers. Great for reaching business professionals.</p>
+                <div class="card-stats">
+                    <div class="card-stat">
+                        <div class="card-stat-value">100M+</div>
+                        <div class="card-stat-label">Readers</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-value">5</div>
+                        <div class="card-stat-label">Articles Ready</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="https://medium.com/new/story" target="_blank" class="btn btn-primary">New Story</a>
+                    <a href="MEDIUM_CONTENT_PACK.md" class="btn btn-secondary">View Pack</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon substack">Σ</div>
+                    <div class="card-title">Substack</div>
+                </div>
+                <p class="card-desc">Newsletter platform with engaged audience. Convert readers to email subscribers.</p>
+                <div class="card-stats">
+                    <div class="card-stat">
+                        <div class="card-stat-value">High</div>
+                        <div class="card-stat-label">Engagement</div>
+                    </div>
+                    <div class="card-stat">
+                        <div class="card-stat-value">5</div>
+                        <div class="card-stat-label">Topics Ready</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="https://substack.com/new-post" target="_blank" class="btn btn-primary">New Post</a>
+                    <a href="#" class="btn btn-secondary">Coming Soon</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="setup-section">
+            <div class="setup-title">Quick Setup Guide</div>
+            <div class="setup-steps">
+                <div class="setup-step">
+                    <div class="setup-step-title">1. Dev.to API Key</div>
+                    <div class="setup-step-desc">
+                        Get your key from <code>dev.to/settings/extensions</code><br>
+                        Export: <code>export DEVTO_API_KEY='xxx'</code>
+                    </div>
+                </div>
+                <div class="setup-step">
+                    <div class="setup-step-title">2. Hashnode Token</div>
+                    <div class="setup-step-desc">
+                        Get your token from <code>hashnode.com/settings/developer</code><br>
+                        Export: <code>export HASHNODE_TOKEN='xxx'</code>
+                    </div>
+                </div>
+                <div class="setup-step">
+                    <div class="setup-step-title">3. Medium Integration</div>
+                    <div class="setup-step-desc">
+                        Get token from <code>medium.com/me/settings/security</code><br>
+                        Export: <code>export MEDIUM_TOKEN='xxx'</code>
+                    </div>
+                </div>
+                <div class="setup-step">
+                    <div class="setup-step-title">4. Run Scripts</div>
+                    <div class="setup-step-desc">
+                        <code>bash syndicate-to-devto.sh</code><br>
+                        <code>bash syndicate-to-hashnode.sh</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="articles-section">
+            <div class="section-title">Ready-to-Syndicate Articles</div>
+            <div class="articles-grid">
+                <div class="article-card">
+                    <div class="article-title">Amazon PPC Guide 2026</div>
+                    <p style="color: #888; font-size: 0.9rem;">Complete guide to Amazon advertising</p>
+                    <div class="article-tags">
+                        <span class="tag">amazon</span>
+                        <span class="tag">ppc</span>
+                        <span class="tag">advertising</span>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-title">Amazon Repricing Strategy 2026</div>
+                    <p style="color: #888; font-size: 0.9rem;">Win the Buy Box with these strategies</p>
+                    <div class="article-tags">
+                        <span class="tag">repricing</span>
+                        <span class="tag">buybox</span>
+                        <span class="tag">strategy</span>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-title">Amazon FBA Calculator</div>
+                    <p style="color: #888; font-size: 0.9rem;">Calculate your true FBA costs and profits</p>
+                    <div class="article-tags">
+                        <span class="tag">fba</span>
+                        <span class="tag">calculator</span>
+                        <span class="tag">profit</span>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-title">Competitor Intelligence Guide</div>
+                    <p style="color: #888; font-size: 0.9rem;">Monitor and outsmart your competitors</p>
+                    <div class="article-tags">
+                        <span class="tag">competition</span>
+                        <span class="tag">intelligence</span>
+                        <span class="tag">analysis</span>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-title">Product Launch Checklist</div>
+                    <p style="color: #888; font-size: 0.9rem;">Everything you need for a successful launch</p>
+                    <div class="article-tags">
+                        <span class="tag">launch</span>
+                        <span class="tag">product</span>
+                        <span class="tag">checklist</span>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-title">Amazon A9 Algorithm</div>
+                    <p style="color: #888; font-size: 0.9rem;">How Amazon's search algorithm works</p>
+                    <div class="article-tags">
+                        <span class="tag">a9</span>
+                        <span class="tag">seo</span>
+                        <span class="tag">algorithm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Auto Company — Content Syndication Hub</p>
+            <p style="margin-top: 10px;">
+                <a href="index.html">Back to Home</a> |
+                <a href="batch-social-generator.html">Social Generator</a> |
+                <a href="https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/" target="_blank">View All Articles</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
