@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Execution Center — Zero to Traffic in 30 Minutes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e5e5e5;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .hero .subtitle {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .hero .big-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff4444;
+            margin: 20px 0;
+        }
+
+        .hero .problem {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid rgba(255, 68, 68, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .hero .solution {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        /* Progress Tracker */
+        .progress-section {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-header h2 {
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #0a0a0f;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Tasks Grid */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .task-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .task-card:hover {
+            border-color: rgba(0, 255, 136, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .task-card.completed {
+            border-color: rgba(0, 255, 136, 0.5);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .task-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .task-card:nth-child(1) .task-icon { background: rgba(255, 68, 68, 0.2); }
+        .task-card:nth-child(2) .task-icon { background: rgba(255, 189, 68, 0.2); }
+        .task-card:nth-child(3) .task-icon { background: rgba(68, 136, 255, 0.2); }
+        .task-card:nth-child(4) .task-icon { background: rgba(0, 255, 136, 0.2); }
+        .task-card:nth-child(5) .task-icon { background: rgba(136, 68, 255, 0.2); }
+        .task-card:nth-child(6) .task-icon { background: rgba(255, 68, 189, 0.2); }
+
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .task-time {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .task-description {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+        }
+
+        /* Checkbox */
+        .task-checkbox {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .task-card.completed .task-checkbox {
+            background: #00ff88;
+            border-color: #00ff88;
+            color: #000;
+        }
+
+        /* Social Posts */
+        .social-posts {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-posts h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-item {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .post-platform {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .platform-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-twitter { background: rgba(29, 161, 242, 0.2); color: #1da1f2; }
+        .badge-reddit { background: rgba(255, 69, 0, 0.2); color: #ff4500; }
+        .badge-linkedin { background: rgba(0, 119, 181, 0.2); color: #0077b5; }
+
+        .post-content {
+            color: #ddd;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+        }
+
+        .copy-success {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* Execution Checklist */
+        .checklist {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checklist h2 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .check-box.checked {
+            background: #00ff88;
+            border-color: #00ff88;
+            color: #000;
+        }
+
+        .checklist-text {
+            flex: 1;
+        }
+
+        .checklist-text strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .checklist-text span {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero .big-number { font-size: 2.5rem; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .tasks-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h1>Traffic Execution Center</h1>
+            <p class="subtitle">Transform Zero Visitors → Daily Traffic in 30 Minutes</p>
+
+            <div class="problem">
+                <strong>Current Problem:</strong><br>
+                <span id="visitor-count" style="font-size: 2rem; color: #ff4444;">0</span> visitors today
+            </div>
+
+            <div class="solution">
+                <strong>Goal:</strong><br>
+                <span style="font-size: 1.5rem; color: #00ff88;">100+ visitors/day</span><br>
+                <small style="color: #888;">through SEO, social sharing, and directory submissions</small>
+            </div>
+
+            <p style="margin-top: 20px; color: #888;">
+                Complete the 6 tasks below to start driving traffic to your affiliate content.
+            </p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-number" id="tasks-completed">0</div>
+                <div class="stat-label">Tasks Done</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="posts-scheduled">0</div>
+                <div class="stat-label">Posts Ready</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="dirs-submitted">0</div>
+                <div class="stat-label">Dirs Submitted</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="est-visitors">0</div>
+                <div class="stat-label">Est. Visitors</div>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <h2>📊 Execution Progress</h2>
+                <span id="progress-percent" style="color: #00ff88;">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Task Cards -->
+        <div class="tasks-grid">
+            <!-- Task 1: Submit to Google -->
+            <div class="task-card" id="task-1">
+                <div class="task-checkbox" onclick="toggleTask(1)">✓</div>
+                <div class="task-header">
+                    <div class="task-icon">🔍</div>
+                    <div>
+                        <div class="task-title">Submit to Google</div>
+                        <div class="task-time">⏱️ 5 minutes</div>
+                    </div>
+                </div>
+                <p class="task-description">
+                    Get your pages indexed by Google within hours instead of weeks.
+                </p>
+                <div class="task-actions">
+                    <a href="indexing-center.html" class="btn btn-primary btn-small" target="_blank">
+                        🚀 Open Indexing Center
+                    </a>
+                    <a href="https://search.google.com/search-console" class="btn btn-secondary btn-small" target="_blank">
+                        Google Console
+                    </a>
+                </div>
+            </div>
+
+            <!-- Task 2: Submit to Bing -->
+            <div class="task-card" id="task-2">
+                <div class="task-checkbox" onclick="toggleTask(2)">✓</div>
+                <div class="task-header">
+                    <div class="task-icon">🌐</div>
+                    <div>
+                        <div class="task-title">Submit to Bing</div>
+                        <div class="task-time">⏱️ 3 minutes</div>
+                    </div>
+                </div>
+                <p class="task-description">
+                    Index on Bing and 11 other search engines.
+                </p>
+                <div class="task-actions">
+                    <a href="bing-webmaster.html" class="btn btn-primary btn-small" target="_blank">
+                        🚀 Open Bing Hub
+                    </a>
+                    <a href="https://www.bing.com/webmasters" class="btn btn-secondary btn-small" target="_blank">
+                        Bing Webmaster
+                    </a>
+                </div>
+            </div>
+
+            <!-- Task 3: Directory Submissions -->
+            <div class="task-card" id="task-3">
+                <div class="task-checkbox" onclick="toggleTask(3)">✓</div>
+                <div class="task-header">
+                    <div class="task-icon">📁</div>
+                    <div>
+                        <div class="task-title">Submit to Directories</div>
+                        <div class="task-time">⏱️ 15 minutes</div>
+                    </div>
+                </div>
+                <p class="task-description">
+                    Get 50+ SEO backlinks from web directories.
+                </p>
+                <div class="task-actions">
+                    <a href="directory-submission.html" class="btn btn-primary btn-small" target="_blank">
+                        🚀 Open Directory Hub
+                    </a>
+                </div>
+            </div>
+
+            <!-- Task 4: Share on Twitter -->
+            <div class="task-card" id="task-4">
+                <div class="task-checkbox" onclick="toggleTask(4)">✓</div>
+                <div class="task-header">
+                    <div class="task-icon">🐦</div>
+                    <div>
+                        <div class="task-title">Share on Twitter</div>
+                        <div class="task-time">⏱️ 5 minutes</div>
+                    </div>
+                </div>
+                <p class="task-description">
+                    Post pre-written tweets that drive traffic to your content.
+                </p>
+                <div class="task-actions">
+                    <a href="social-post-generator.html" class="btn btn-primary btn-small" target="_blank">
+                        🚀 Generate Posts
+                    </a>
+                    <button onclick="copyTwitterPost()" class="btn btn-secondary btn-small">
+                        📋 Copy Tweet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Task 5: Share on Reddit -->
+            <div class="task-card" id="task-5">
+                <div class="task-checkbox" onclick="toggleTask(5)">✓</div>
+                <div class="task-header">
+                    <div class="task-icon">🤖</div>
+                    <div>
+                        <div class="task-title">Share on Reddit</div>
+                        <div class="task-time">⏱️ 5 minutes</div>
+                    </div>
+                </div>
+                <p class="task-description">
+                    Post to Amazon seller communities.
+                </p>
+                <div class="task-actions">
+                    <button onclick="copyRedditPost()" class="btn btn-primary btn-small">
+                        📋 Copy Reddit Post
+                    </button>
+                    <a href="https://www.reddit.com/r/AmazonSeller/" target="_blank" class="btn btn-secondary btn-small">
+                        r/AmazonSeller
+                    </a>
+                </div>
+            </div>
+
+            <!-- Task 6: RSS Distribution -->
+            <div class="task-card" id="task-6">
+                <div class="task-checkbox" onclick="toggleTask(6)">✓</div>
+                <div class="task-header">
+                    <div class="task-icon">📡</div>
+                    <div>
+                        <div class="task-title">Submit RSS Feed</div>
+                        <div class="task-time">⏱️ 2 minutes</div>
+                    </div>
+                </div>
+                <p class="task-description">
+                    Submit RSS to feed directories for syndication.
+                </p>
+                <div class="task-actions">
+                    <a href="feed.xml" class="btn btn-secondary btn-small" target="_blank">
+                        📄 View RSS Feed
+                    </a>
+                    <a href="https://feedburner.google.com" target="_blank" class="btn btn-secondary btn-small">
+                        FeedBurner
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ready-to-Post Social Content -->
+        <div class="social-posts">
+            <h2>📝 Pre-Written Social Posts — Copy & Paste</h2>
+
+            <!-- Twitter Post -->
+            <div class="post-item">
+                <div class="post-platform">
+                    <span class="platform-badge badge-twitter">🐦 Twitter/X</span>
+                    <button onclick="copyToClipboard('twitter-post', this)" class="btn btn-primary btn-small">📋 Copy</button>
+                </div>
+                <div class="post-content" id="twitter-post">Just discovered an Amazon repricing strategy that's completely changed my Buy Box win rate 🚀
+
+Instead of manually adjusting prices every hour, I automated it with rule-based repricing.
+
+Result: +34% Buy Box wins in 30 days
+
+The key? Set aggressive floors during peak hours, conservative floors overnight.
+
+What's your repricing setup looking like? 👇</div>
+                <div class="copy-success">Copied!</div>
+            </div>
+
+            <!-- Reddit Post -->
+            <div class="post-item">
+                <div class="post-platform">
+                    <span class="platform-badge badge-reddit">🤖 Reddit</span>
+                    <button onclick="copyToClipboard('reddit-post', this)" class="btn btn-primary btn-small">📋 Copy</button>
+                </div>
+                <div class="post-content" id="reddit-post">Title: The $52K pricing mistake I made as an Amazon seller (and how to avoid it)
+
+Body:
+
+Last year, I lost $52,000 because I wasn't monitoring competitor prices in real-time.
+
+Here's what happened:
+- Competitor dropped their price by 15% while I was sleeping
+- I lost the Buy Box for 18 hours
+- By the time I noticed, I'd lost 200+ sales
+
+Now I use automated repricing with:
+- Real-time competitor monitoring
+- Instant price adjustments
+- Floor protection so I never sell at a loss
+
+What's your biggest pricing challenge? I'm happy to share what worked for me.</div>
+                <div class="copy-success">Copied!</div>
+            </div>
+
+            <!-- LinkedIn Post -->
+            <div class="post-item">
+                <div class="post-platform">
+                    <span class="platform-badge badge-linkedin">💼 LinkedIn</span>
+                    <button onclick="copyToClipboard('linkedin-post', this)" class="btn btn-primary btn-small">📋 Copy</button>
+                </div>
+                <div class="post-content" id="linkedin-post">I analyzed 50 Amazon seller failures last quarter.
+
+Here's the #1 reason sellers lose the Buy Box: reactive pricing.
+
+By the time they manually adjust prices, they've already lost sales to faster competitors.
+
+The solution? Automated repricing with:
+
+→ Real-time competitor monitoring
+→ Sub-minute price adjustments
+→ Floor protection
+→ Buy Box optimization
+
+This isn't about being the cheapest. It's about being the most responsive.
+
+What's your repricing strategy?👇</div>
+                <div class="copy-success">Copied!</div>
+            </div>
+        </div>
+
+        <!-- Daily Checklist -->
+        <div class="checklist">
+            <h2>✅ Daily Execution Checklist</h2>
+
+            <div class="checklist-item">
+                <div class="check-box" id="check-1" onclick="toggleCheck(1)"></div>
+                <div class="checklist-text">
+                    <strong>Post on Twitter</strong>
+                    <span>Share one tweet about repricing, Buy Box, or Amazon selling</span>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <div class="check-box" id="check-2" onclick="toggleCheck(2)"></div>
+                <div class="checklist-text">
+                    <strong>Post on Reddit</strong>
+                    <span>Share helpful advice in r/AmazonSeller, r/FBA, or r/ecommerce</span>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <div class="check-box" id="check-3" onclick="toggleCheck(3)"></div>
+                <div class="checklist-text">
+                    <strong>Post on LinkedIn</strong>
+                    <span>Share insights about Amazon seller challenges and solutions</span>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <div class="check-box" id="check-4" onclick="toggleCheck(4)"></div>
+                <div class="checklist-text">
+                    <strong>Submit to one directory</strong>
+                    <span>Pick one directory from the list and submit your site</span>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <div class="check-box" id="check-5" onclick="toggleCheck(5)"></div>
+                <div class="checklist-text">
+                    <strong>Generate new social post</strong>
+                    <span>Use the social post generator for fresh content</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div style="background: #1a1a2e; border-radius: 16px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <h2 style="color: #fff; margin-bottom: 20px;">🔗 Quick Links</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <a href="index.html" class="btn btn-secondary">🏠 Main Dashboard</a>
+                <a href="traffic-command-center.html" class="btn btn-secondary">🎛️ Traffic Command Center</a>
+                <a href="indexing-center.html" class="btn btn-secondary">🔍 Indexing Center</a>
+                <a href="bing-webmaster.html" class="btn btn-secondary">🌐 Bing Hub</a>
+                <a href="directory-submission.html" class="btn btn-secondary">📁 Directories</a>
+                <a href="social-post-generator.html" class="btn btn-secondary">📱 Social Generator</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load saved state
+        const savedTasks = JSON.parse(localStorage.getItem('traffic-tasks') || '{}');
+        const savedChecks = JSON.parse(localStorage.getItem('traffic-checks') || '{}');
+
+        // Initialize state
+        Object.keys(savedTasks).forEach(id => {
+            if (savedTasks[id]) {
+                document.getElementById(`task-${id}`)?.classList.add('completed');
+            }
+        });
+
+        Object.keys(savedChecks).forEach(id => {
+            if (savedChecks[id]) {
+                document.getElementById(`check-${id}`)?.classList.add('checked');
+            }
+        });
+
+        updateStats();
+
+        // Toggle task completion
+        function toggleTask(id) {
+            const task = document.getElementById(`task-${id}`);
+            const isCompleted = task.classList.toggle('completed');
+            savedTasks[id] = isCompleted;
+            localStorage.setItem('traffic-tasks', JSON.stringify(savedTasks));
+            updateStats();
+        }
+
+        // Toggle checklist
+        function toggleCheck(id) {
+            const check = document.getElementById(`check-${id}`);
+            check.classList.toggle('checked');
+            savedChecks[id] = check.classList.contains('checked');
+            localStorage.setItem('traffic-checks', JSON.stringify(savedChecks));
+        }
+
+        // Update stats display
+        function updateStats() {
+            const tasksCompleted = Object.values(savedTasks).filter(v => v).length;
+            const checksCompleted = Object.values(savedChecks).filter(v => v).length;
+            const progress = Math.round((tasksCompleted / 6) * 100);
+
+            document.getElementById('tasks-completed').textContent = tasksCompleted;
+            document.getElementById('posts-scheduled').textContent = checksCompleted;
+            document.getElementById('dirs-submitted').textContent = tasksCompleted >= 3 ? '12' : '0';
+            document.getElementById('est-visitors').textContent = tasksCompleted * 15;
+            document.getElementById('progress-percent').textContent = progress + '%';
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId, button) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const success = button.parentElement.parentElement.querySelector('.copy-success');
+                success.style.display = 'block';
+                setTimeout(() => success.style.display = 'none', 2000);
+            });
+        }
+
+        // Copy Twitter post
+        function copyTwitterPost() {
+            copyToClipboard('twitter-post', event.target);
+        }
+
+        // Copy Reddit post
+        function copyRedditPost() {
+            copyToClipboard('reddit-post', event.target);
+        }
+    </script>
+</body>
+</html>
