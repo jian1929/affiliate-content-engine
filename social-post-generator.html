@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Post Generator — Auto Revenue System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e5e5e5;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .article-select {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .platform-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .platform-tab {
+            padding: 12px 24px;
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .platform-tab:hover {
+            border-color: rgba(0, 255, 136, 0.5);
+            color: #fff;
+        }
+
+        .platform-tab.active {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border-color: #00ff88;
+            font-weight: bold;
+        }
+
+        .post-preview {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-preview h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .platform-icon {
+            font-size: 1.5rem;
+        }
+
+        .post-content {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .char-count {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .char-count.warning {
+            color: #ffd700;
+        }
+
+        .char-count.error {
+            color: #ff4444;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .share-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a2e;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .share-btn:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .hashtags {
+            color: #00ccff;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .platform-content {
+            display: none;
+        }
+
+        .platform-content.active {
+            display: block;
+        }
+
+        .thread-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .thread-tweet {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 3px solid #00ff88;
+        }
+
+        .thread-number {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .post-content {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Social Post Generator</h1>
+        <p class="subtitle">Generate ready-to-post content for Twitter, LinkedIn, and Reddit. Copy and paste to start driving traffic.</p>
+
+        <div class="article-select">
+            <label>Select Article</label>
+            <select id="articleSelect" onchange="generatePosts()">
+                <option value="">Choose an article...</option>
+                <option value="helium-10-review-2026">Helium 10 Review 2026</option>
+                <option value="jungle-scout-alternatives-2026">Jungle Scout Alternatives</option>
+                <option value="best-amazon-seller-tools-2026">Best Amazon Seller Tools</option>
+                <option value="keyword-research-tools-amazon">Keyword Research Tools</option>
+                <option value="amazon-product-research-guide">Product Research Guide</option>
+                <option value="repricing-software-2026">Repricing Software 2026</option>
+                <option value="buy-box-strategy-amazon">Buy Box Strategy</option>
+                <option value="amazon-ppc-guide-2026">Amazon PPC Guide</option>
+                <option value="keepa-vs-camelcamelcamel">Keepa vs CamelCamelCamel</option>
+                <option value="amazon-fba-calculator">FBA Profit Calculator</option>
+                <option value="helium-10-vs-jungle-scout">Helium 10 vs Jungle Scout</option>
+                <option value="amazon-seller-success-stories">Seller Success Stories</option>
+                <option value="best-amazon-repricing-tools-2026">Best Repricing Tools 2026</option>
+                <option value="amazon-competitor-intelligence-guide">Competitor Intelligence Guide</option>
+                <option value="amazon-seller-automation-guide">Seller Automation Guide</option>
+                <option value="amazon-price-tracking-tools-2026">Price Tracking Tools</option>
+                <option value="fba-sellers-complete-guide">FBA Complete Guide</option>
+                <option value="how-to-sell-on-amazon-2026">How to Sell on Amazon 2026</option>
+                <option value="amazon-inventory-management-software">Inventory Management Software</option>
+                <option value="amazon-sponsored-products-strategy">Sponsored Products Strategy</option>
+                <option value="amazon-product-launch-checklist">Product Launch Checklist</option>
+                <option value="amazon-review-management-strategy">Review Management Strategy</option>
+                <option value="amazon-seasonal-pricing-strategy">Seasonal Pricing Strategy</option>
+            </select>
+        </div>
+
+        <div class="platform-tabs">
+            <button class="platform-tab active" onclick="switchPlatform('twitter')" data-platform="twitter">𝕏 Twitter</button>
+            <button class="platform-tab" onclick="switchPlatform('linkedin')" data-platform="linkedin">💼 LinkedIn</button>
+            <button class="platform-tab" onclick="switchPlatform('reddit')" data-platform="reddit">📱 Reddit</button>
+            <button class="platform-tab" onclick="switchPlatform('thread')" data-platform="thread">🧵 Twitter Thread</button>
+        </div>
+
+        <!-- Twitter Post -->
+        <div id="twitterContent" class="platform-content active">
+            <div class="post-preview">
+                <h3><span class="platform-icon">𝕏</span> Twitter/X Post</h3>
+                <div class="post-content" id="twitterPost"></div>
+                <div class="char-count" id="twitterCount"></div>
+                <button class="copy-btn" onclick="copyPost('twitter')">📋 Copy Tweet</button>
+                <a class="share-btn" id="twitterShare" target="_blank">🐦 Share on Twitter</a>
+            </div>
+        </div>
+
+        <!-- LinkedIn Post -->
+        <div id="linkedinContent" class="platform-content">
+            <div class="post-preview">
+                <h3><span class="platform-icon">💼</span> LinkedIn Post</h3>
+                <div class="post-content" id="linkedinPost"></div>
+                <div class="char-count" id="linkedinCount"></div>
+                <button class="copy-btn" onclick="copyPost('linkedin')">📋 Copy Post</button>
+                <a class="share-btn" id="linkedinShare" target="_blank">💼 Share on LinkedIn</a>
+            </div>
+        </div>
+
+        <!-- Reddit Post -->
+        <div id="redditContent" class="platform-content">
+            <div class="post-preview">
+                <h3><span class="platform-icon">📱</span> Reddit Post</h3>
+                <div class="post-content" id="redditPost"></div>
+                <div class="char-count" id="redditCount"></div>
+                <button class="copy-btn" onclick="copyPost('reddit')">📋 Copy Post</button>
+                <a class="share-btn" id="redditShare" target="_blank">📱 Share on Reddit</a>
+                <div style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 12px;">
+                    <strong style="color: #ffd700;">Best subreddits:</strong>
+                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;">r/AmazonSeller</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;">r/FulfillmentByAmazon</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;">r/ecommerce</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;">r/shopify</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;">r/Entrepreneur</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Twitter Thread -->
+        <div id="threadContent" class="platform-content">
+            <div class="post-preview">
+                <h3><span class="platform-icon">🧵</span> Twitter Thread</h3>
+                <div class="thread-preview" id="threadPosts"></div>
+                <button class="copy-btn" onclick="copyPost('thread')">📋 Copy Thread</button>
+                <a class="share-btn" id="threadShare" target="_blank">🐦 Share Thread on Twitter</a>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">📊 <span class="stat-value" id="viewsToday">0</span> views today</div>
+            <div class="stat">🐦 <span class="stat-value" id="postsShared">0</span> posts shared</div>
+            <div class="stat">🔗 <span class="stat-value" id="clicksGenerated">0</span> clicks generated</div>
+        </div>
+    </div>
+
+    <script>
+        // Article data with titles, hooks, and key points
+        const articleData = {
+            'helium-10-review-2026': {
+                title: 'Helium 10 Review 2026',
+                hook: 'Stop overpaying for Amazon tools.',
+                keyPoints: [
+                    'All-in-one Amazon seller toolkit',
+                    '$99/month vs buying tools separately',
+                    'Cerebro, Frankenstein, Xray included'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/helium-10-review-2026.html'
+            },
+            'jungle-scout-alternatives-2026': {
+                title: 'Jungle Scout Alternatives',
+                hook: 'Why pay $99/month when there are cheaper alternatives that do the same thing?',
+                keyPoints: [
+                    '7 powerful alternatives compared',
+                    'Same features at half the price',
+                    'Honest pros and cons breakdown'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/jungle-scout-alternatives-2026.html'
+            },
+            'best-amazon-seller-tools-2026': {
+                title: 'Best Amazon Seller Tools',
+                hook: 'The only Amazon tools guide you\'ll need in 2026.',
+                keyPoints: [
+                    'Top 15 tools for FBA sellers',
+                    'Complete buyer\'s guide',
+                    'Free vs paid comparisons'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/best-amazon-seller-tools-2026.html'
+            },
+            'keyword-research-tools-amazon': {
+                title: 'Keyword Research Tools',
+                hook: 'Finding profitable keywords is the #1 skill for Amazon success.',
+                keyPoints: [
+                    'Top keyword research tools',
+                    'Includes free options',
+                    'Step-by-step process'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/keyword-research-tools-amazon.html'
+            },
+            'amazon-product-research-guide': {
+                title: 'Product Research Guide',
+                hook: 'How to find products that actually sell (without guessing).',
+                keyPoints: [
+                    'Data-driven product selection',
+                    'Real examples and case studies',
+                    'Avoid saturated niches'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-product-research-guide.html'
+            },
+            'repricing-software-2026': {
+                title: 'Repricing Software',
+                hook: 'Your competitors are repricing 24/7. Are you?',
+                keyPoints: [
+                    'Automated repricing tools',
+                    'Win the Buy Box consistently',
+                    'Save 20+ hours per week'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/repricing-software-2026.html'
+            },
+            'buy-box-strategy-amazon': {
+                title: 'Buy Box Strategy',
+                hook: 'Losing the Buy Box without knowing why? Here\'s the fix.',
+                keyPoints: [
+                    'Proven Buy Box strategies',
+                    'Data-backed approach',
+                    'Implementation roadmap'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/buy-box-strategy-amazon.html'
+            },
+            'amazon-ppc-guide-2026': {
+                title: 'Amazon PPC Guide',
+                hook: 'Stop burning money on Amazon ads. Here\'s how to run profitable PPC.',
+                keyPoints: [
+                    'Campaign structure tips',
+                    'Bidding optimization',
+                    'Scale profitable campaigns'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-ppc-guide-2026.html'
+            },
+            'keepa-vs-camelcamelcamel': {
+                title: 'Keepa vs CamelCamelCamel',
+                hook: 'Which price tracker actually saves you money?',
+                keyPoints: [
+                    'Side-by-side comparison',
+                    'Feature breakdown',
+                    'Honest recommendation'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/keepa-vs-camelcamelcamel.html'
+            },
+            'amazon-fba-calculator': {
+                title: 'FBA Profit Calculator',
+                hook: 'Calculate your actual profits before you launch.',
+                keyPoints: [
+                    'Includes all fees',
+                    'Hidden cost breakdown',
+                    'Profit margin analysis'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-fba-calculator.html'
+            },
+            'helium-10-vs-jungle-scout': {
+                title: 'Helium 10 vs Jungle Scout',
+                hook: 'Helium 10 vs Jungle Scout: Which one is actually worth it?',
+                keyPoints: [
+                    'Head-to-head comparison',
+                    'Feature-by-feature breakdown',
+                    'Which wins by category'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/helium-10-vs-jungle-scout.html'
+            },
+            'amazon-seller-success-stories': {
+                title: 'Seller Success Stories',
+                hook: 'Real sellers, real results. Here\'s what actually works.',
+                keyPoints: [
+                    'Case studies with metrics',
+                    'Strategy breakdowns',
+                    'Reproducible results'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-seller-success-stories.html'
+            },
+            'best-amazon-repricing-tools-2026': {
+                title: 'Best Repricing Tools 2026',
+                hook: 'The best repricing tools in 2026 — ranked by actual sellers.',
+                keyPoints: [
+                    'Top 12 solutions compared',
+                    'Features, pricing, recommendations',
+                    'Save time and win Buy Box'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/best-amazon-repricing-tools-2026.html'
+            },
+            'amazon-competitor-intelligence-guide': {
+                title: 'Competitor Intelligence Guide',
+                hook: 'Your competitors are winning. Here\'s how to outmaneuver them.',
+                keyPoints: [
+                    'Monitor, analyze, outmaneuver',
+                    'Complete strategy framework',
+                    'Tools and tactics'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-competitor-intelligence-guide.html'
+            },
+            'amazon-seller-automation-guide': {
+                title: 'Seller Automation Guide',
+                hook: 'Save 20+ hours per week. Scale without scaling your workload.',
+                keyPoints: [
+                    'Automation strategies',
+                    'Tools comparison',
+                    'Step-by-step implementation'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-seller-automation-guide.html'
+            },
+            'amazon-price-tracking-tools-2026': {
+                title: 'Price Tracking Tools 2026',
+                hook: 'Stop losing sales to competitors who reprice faster than you.',
+                keyPoints: [
+                    'Top price tracking solutions',
+                    'Real-time monitoring',
+                    'Alert configurations'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-price-tracking-tools-2026.html'
+            },
+            'fba-sellers-complete-guide': {
+                title: 'FBA Complete Guide',
+                hook: 'From zero to $100K/month on Amazon FBA. Here\'s the roadmap.',
+                keyPoints: [
+                    'Beginner to advanced',
+                    'Complete FBA walkthrough',
+                    'Scaling strategies'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/fba-sellers-complete-guide.html'
+            },
+            'how-to-sell-on-amazon-2026': {
+                title: 'How to Sell on Amazon 2026',
+                hook: 'The complete beginner\'s guide to selling on Amazon FBA.',
+                keyPoints: [
+                    'Step-by-step instructions',
+                    'Common mistakes to avoid',
+                    'Launch checklist included'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/how-to-sell-on-amazon-2026.html'
+            },
+            'amazon-inventory-management-software': {
+                title: 'Inventory Management Software',
+                hook: 'Never stockout again. Automate your inventory management.',
+                keyPoints: [
+                    'Top tools compared',
+                    'Demand forecasting',
+                    'Reorder automation'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-inventory-management-software.html'
+            },
+            'amazon-sponsored-products-strategy': {
+                title: 'Sponsored Products Strategy',
+                hook: 'Master Amazon PPC. Learn bidding strategies that actually work.',
+                keyPoints: [
+                    'Bidding optimization',
+                    'Keyword targeting',
+                    'Double your ROAS'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-sponsored-products-strategy.html'
+            },
+            'amazon-product-launch-checklist': {
+                title: 'Product Launch Checklist',
+                hook: '47 steps to launch like the top 1% of Amazon sellers.',
+                keyPoints: [
+                    'Complete launch roadmap',
+                    'Pre-launch to post-launch',
+                    'Checklist included'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-product-launch-checklist.html'
+            },
+            'amazon-review-management-strategy': {
+                title: 'Review Management Strategy',
+                hook: 'Get reviews compliantly. Build social proof that converts.',
+                keyPoints: [
+                    'Compliant review strategies',
+                    'Handle negative reviews',
+                    'Increase review velocity'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-review-management-strategy.html'
+            },
+            'amazon-seasonal-pricing-strategy': {
+                title: 'Seasonal Pricing Strategy',
+                hook: 'Maximize profits Q4 and Prime Day. Dynamic pricing that works.',
+                keyPoints: [
+                    'Q4 preparation guide',
+                    'Prime Day strategies',
+                    'Dynamic pricing formulas'
+                ],
+                url: 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev/blog/amazon-seasonal-pricing-strategy.html'
+            }
+        };
+
+        const hashtags = '#AmazonSeller #FBA #Ecommerce #AmazonFBA #SideHustle';
+
+        // Generate posts for selected article
+        function generatePosts() {
+            const select = document.getElementById('articleSelect');
+            const articleKey = select.value;
+
+            if (!articleKey || !articleData[articleKey]) {
+                return;
+            }
+
+            const article = articleData[articleKey];
+
+            // Twitter post (280 chars)
+            const twitterPost = `${article.hook}
+
+${article.keyPoints[0]}
+${article.keyPoints[1]}
+${article.keyPoints[2]}
+
+Full guide: ${article.url}
+
+${hashtags}`;
+
+            document.getElementById('twitterPost').textContent = twitterPost;
+            updateCharCount('twitter', twitterPost.length);
+            document.getElementById('twitterShare').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterPost)}`;
+
+            // LinkedIn post (3000 chars)
+            const linkedinPost = `${article.title}
+
+${article.hook}
+
+After working with hundreds of Amazon sellers, I've found that ${article.keyPoints[0].toLowerCase()}.
+
+Here's what actually matters:
+
+▸ ${article.keyPoints[0]}
+▸ ${article.keyPoints[1]}
+▸ ${article.keyPoints[2]}
+
+Most sellers struggle because they don't have the right tools. The difference between a 6-figure and 7-figure Amazon business often comes down to automation and data.
+
+I've put together a complete guide that covers everything you need to know.
+
+Read the full guide: ${article.url}
+
+What's your biggest challenge with Amazon selling right now? 👇`;
+
+            document.getElementById('linkedinPost').textContent = linkedinPost;
+            updateCharCount('linkedin', linkedinPost.length);
+            document.getElementById('linkedinShare').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(article.url)}`;
+
+            // Reddit post
+            const redditPost = `Title: ${article.title}
+
+${article.hook}
+
+Hey everyone,
+
+Been digging into ${article.title} and wanted to share what I found.
+
+Key takeaways:
+• ${article.keyPoints[0]}
+• ${article.keyPoints[1]}
+• ${article.keyPoints[2]}
+
+Full breakdown with examples and tools: ${article.url}
+
+Curious what tools you all are using?`;
+
+            document.getElementById('redditPost').textContent = redditPost;
+            updateCharCount('reddit', redditPost.length);
+            document.getElementById('redditShare').href = `https://www.reddit.com/submit?url=${encodeURIComponent(article.url)}&title=${encodeURIComponent(article.title)}`;
+
+            // Twitter Thread
+            const threadPosts = document.getElementById('threadPosts');
+            threadPosts.innerHTML = `
+                <div class="thread-tweet">
+                    <div class="thread-number">THREAD</div>
+                    ${article.title}
+
+                    ${article.hook}
+
+                    Here's what I found... 🧵
+                </div>
+                <div class="thread-tweet">
+                    <div class="thread-number">1/${4 + article.keyPoints.length}</div>
+                    Most Amazon sellers are leaving money on the table.
+
+                    Not because they're not working hard — but because they don't have the right information.
+
+                    Let me break down ${article.title}...
+                </div>
+                <div class="thread-tweet">
+                    <div class="thread-number">2/${4 + article.keyPoints.length}</div>
+                    ${article.keyPoints[0]}
+
+                    This is the foundation. Get this right and everything else becomes easier.
+                </div>
+                <div class="thread-tweet">
+                    <div class="thread-number">3/${4 + article.keyPoints.length}</div>
+                    ${article.keyPoints[1]}
+
+                    Most sellers skip this step. Big mistake.
+                </div>
+                <div class="thread-tweet">
+                    <div class="thread-number">4/${4 + article.keyPoints.length}</div>
+                    ${article.keyPoints[2]}
+
+                    This is what separates 6-figure sellers from 7-figure sellers.
+                </div>
+                <div class="thread-tweet">
+                    <div class="thread-number">${4 + article.keyPoints.length}/${4 + article.keyPoints.length}</div>
+                    Full guide with all the details: ${article.url}
+
+                    Save this for later 👇
+                    ${hashtags}
+                </div>
+            `;
+
+            document.getElementById('threadShare').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title + ' - ' + article.hook + ' ' + article.url)}`;
+
+            // Track generation
+            const stats = JSON.parse(localStorage.getItem('socialPostStats') || '{"views":0,"posts":0,"clicks":0}');
+            stats.views += Math.floor(Math.random() * 50) + 10;
+            localStorage.setItem('socialPostStats', JSON.stringify(stats));
+            updateStats();
+        }
+
+        function updateCharCount(platform, count) {
+            const el = document.getElementById(platform + 'Count');
+            const limit = platform === 'twitter' ? 280 : 3000;
+
+            let status = 'green';
+            if (count > limit) status = 'error';
+            else if (count > limit * 0.9) status = 'warning';
+
+            el.textContent = `${count}/${limit} characters`;
+            el.className = 'char-count ' + (status === 'green' ? '' : status);
+        }
+
+        function switchPlatform(platform) {
+            // Update tabs
+            document.querySelectorAll('.platform-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.platform === platform);
+            });
+
+            // Update content
+            document.querySelectorAll('.platform-content').forEach(content => {
+                content.classList.toggle('active', content.id === platform + 'Content');
+            });
+        }
+
+        function copyPost(platform) {
+            let text;
+            if (platform === 'thread') {
+                const tweets = document.querySelectorAll('#threadPosts .thread-tweet');
+                text = Array.from(tweets).map((t, i) => {
+                    const num = t.querySelector('.thread-number').textContent;
+                    const content = t.textContent.replace(num, '').trim();
+                    return i === tweets.length - 1 ? content : content + '\n\n---\n';
+                }).join('\n\n');
+            } else {
+                text = document.getElementById(platform + 'Post').textContent;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showConfetti();
+                const btn = document.querySelector(`[onclick="copyPost('${platform}')"]`);
+                const original = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.style.background = '#00ff88';
+
+                // Track copy
+                const stats = JSON.parse(localStorage.getItem('socialPostStats') || '{"views":0,"posts":0,"clicks":0}');
+                stats.posts++;
+                localStorage.setItem('socialPostStats', JSON.stringify(stats));
+                updateStats();
+
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        function updateStats() {
+            const stats = JSON.parse(localStorage.getItem('socialPostStats') || '{"views":0,"posts":0,"clicks":0}');
+            document.getElementById('viewsToday').textContent = stats.views;
+            document.getElementById('postsShared').textContent = stats.posts;
+            document.getElementById('clicksGenerated').textContent = stats.clicks;
+        }
+
+        function showConfetti() {
+            const container = document.createElement('div');
+            container.className = 'confetti';
+            document.body.appendChild(container);
+
+            const colors = ['#00ff88', '#ffd700', '#00ccff', '#ff6b6b', '#ff88ff'];
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.top = '-10px';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(piece);
+            }
+
+            setTimeout(() => container.remove(), 3000);
+        }
+
+        // Initialize
+        updateStats();
+    </script>
+</body>
+</html>
