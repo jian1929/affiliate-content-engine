@@ -1,0 +1,20 @@
+name: Debug Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check directory
+        run: |
+          echo "=== Checking deploy_cf_latest ==="
+          ls -la deploy_cf_latest/
+          echo "=== Checking blog ==="
+          ls deploy_cf_latest/blog/ | head -5
+          echo "=== Checking _routes.json ==="
+          cat deploy_cf_latest/_routes.json
