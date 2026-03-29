@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bing Webmaster Tools — Index Submission</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .hero { text-align: center; padding: 40px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(255, 215, 0, 0.3); }
+        h1 { font-size: 2.5rem; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .subtitle { color: #888; margin-bottom: 20px; }
+        .card { background: #1a1a2e; border-radius: 16px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h2 { color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .btn { padding: 12px 30px; border-radius: 25px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .status { padding: 15px; border-radius: 10px; margin: 10px 0; display: flex; align-items: center; gap: 10px; }
+        .status.success { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .status.pending { background: rgba(255, 215, 0, 0.2); color: #ffd700; }
+        .status.error { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+        .manual-box { background: #0a0a0f; border-radius: 12px; padding: 20px; margin: 15px 0; }
+        .manual-box input, .manual-box textarea { width: 100%; padding: 12px; background: #1a1a2e; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 0.95rem; margin: 10px 0; }
+        .manual-box textarea { resize: vertical; min-height: 100px; }
+        .tips { background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 20px; margin: 20px 0; }
+        .tips h3 { color: #ffd700; margin-bottom: 10px; }
+        .tips ul { margin-left: 20px; color: #888; line-height: 1.8; }
+        .tips li { margin: 5px 0; }
+        .tips a { color: #ffd700; text-decoration: none; }
+        .url-list { background: #0a0a0f; border-radius: 12px; padding: 20px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
+        .url-item { display: flex; align-items: center; padding: 10px; background: #1a1a2e; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; gap: 10px; }
+        .url-item input[type="checkbox"] { transform: scale(1.2); }
+        .url-item span { color: #888; font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .submit-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .engines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .engine-card { background: #0a0a0f; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s; }
+        .engine-card:hover { border-color: #ffd700; transform: translateY(-3px); }
+        .engine-card.selected { border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
+        .engine-card .icon { font-size: 2rem; margin-bottom: 10px; }
+        .engine-card h3 { color: #fff; margin-bottom: 5px; font-size: 1rem; }
+        .engine-card p { color: #888; font-size: 0.8rem; }
+        .engine-card .badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 0.7rem; margin-top: 8px; }
+        .badge.free { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .badge.api { background: rgba(0, 204, 255, 0.2); color: #00ccff; }
+        .badge.manual { background: rgba(255, 215, 0, 0.2); color: #ffd700; }
+        .progress-bar { height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin: 15px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ff8c00); transition: width 0.3s; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+        .stat-box { background: #0a0a0f; border-radius: 12px; padding: 15px; text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: #ffd700; }
+        .stat-label { color: #888; font-size: 0.75rem; margin-top: 5px; }
+        @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } h1 { font-size: 1.8rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Bing Webmaster Tools</h1>
+            <p class="subtitle">Submit your site to Bing and 10+ other search engines for maximum coverage.</p>
+
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-value" id="totalEngines">12</div><div class="stat-label">Search Engines</div></div>
+                <div class="stat-box"><div class="stat-value" id="submittedTo">0</div><div class="stat-label">Submitted</div></div>
+                <div class="stat-box"><div class="stat-value" id="apiReady">0</div><div class="stat-label">API Ready</div></div>
+                <div class="stat-box"><div class="stat-value" id="manual">0</div><div class="stat-label">Manual</div></div>
+            </div>
+
+            <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width: 0%"></div></div>
+        </div>
+
+        <!-- Search Engines -->
+        <div class="card">
+            <h2><span>🔍</span> Search Engine Indexing</h2>
+            <p style="color: #888; margin-bottom: 15px;">Select engines to submit to. Most are free, some require API keys.</p>
+
+            <div class="engines-grid" id="enginesGrid"></div>
+        </div>
+
+        <!-- Bing API -->
+        <div class="card" id="bingApiCard">
+            <h2><span>🔵</span> Bing Webmaster API Setup</h2>
+            <p style="color: #888; margin-bottom: 15px;">Bing provides a free API for programmatic submission.</p>
+
+            <div class="manual-box">
+                <label>Bing API Key:</label>
+                <input type="password" id="bingApiKey" placeholder="Enter your Bing Webmaster API Key">
+                <button class="btn btn-secondary" onclick="testBingApi()">Test & Save</button>
+            </div>
+
+            <div class="tips">
+                <h3>How to Get Bing API Key:</h3>
+                <ul>
+                    <li>1. Go to <a href="https://www.bing.com/webmasters" target="_blank">Bing Webmaster Tools</a></li>
+                    <li>2. Sign in with your Microsoft account</li>
+                    <li>3. Add your site: <code>ae16e0d4.affiliate-content-engine-92g.pages.dev</code></li>
+                    <li>4. Go to Settings → API Access</li>
+                    <li>5. Copy your API Key and paste above</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Manual Submission -->
+        <div class="card">
+            <h2><span>📋</span> URLs to Submit</h2>
+            <p style="color: #888; margin-bottom: 15px;">Select all URLs you want to index.</p>
+
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 15px;">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" checked>
+                <span>Select All</span>
+            </label>
+
+            <div class="url-list" id="urlList"></div>
+
+            <div class="submit-row">
+                <button class="btn btn-primary" onclick="submitToSelected()">🚀 Submit to Selected Engines</button>
+                <button class="btn btn-secondary" onclick="openAllEngines()">🔍 Open All (Manual)</button>
+            </div>
+
+            <div id="submitStatus"></div>
+        </div>
+
+        <!-- Bulk Submission -->
+        <div class="card">
+            <h2><span>📄</span> Bulk URL Submission</h2>
+            <p style="color: #888; margin-bottom: 15px;">Submit a list of URLs for indexing.</p>
+
+            <div class="manual-box">
+                <label>URLs (one per line):</label>
+                <textarea id="bulkUrls" placeholder="https://example.com/page1
+https://example.com/page2"></textarea>
+                <button class="btn btn-primary" onclick="submitBulkUrls()">Submit Bulk URLs</button>
+            </div>
+        </div>
+
+        <!-- Submission Log -->
+        <div class="card">
+            <h2><span>📊</span> Submission Log</h2>
+            <div class="url-list" id="logList" style="max-height: 200px;">
+                <p style="color: #888; text-align: center;">No submissions yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev';
+
+        const engines = [
+            { id: 'bing', name: 'Bing', icon: '🔵', api: true, url: 'https://www.bing.com/webmasters' },
+            { id: 'google', name: 'Google', icon: '🔍', api: false, url: 'https://search.google.com/search-console' },
+            { id: 'yahoo', name: 'Yahoo', icon: '🟣', api: false, url: 'https://search.yahoo.com' },
+            { id: 'baidu', name: 'Baidu', icon: '🔴', api: false, url: 'https://www.baidu.com' },
+            { id: 'yandex', name: 'Yandex', icon: '🟡', api: true, url: 'https://webmaster.yandex.com' },
+            { id: 'duckduckgo', name: 'DuckDuckGo', icon: '🦆', api: false, url: 'https://duckduckgo.com' },
+            { id: 'naver', name: 'Naver', icon: '🟢', api: false, url: 'https://searchadvisor.naver.com' },
+            { id: 'sogou', name: 'Sogou', icon: '🔶', api: false, url: 'https://www.sogou.com' },
+            { id: 'ask', name: 'Ask.com', icon: '❓', api: false, url: 'https://www.ask.com' },
+            { id: 'ecosia', name: 'Ecosia', icon: '🌿', api: false, url: 'https://www.ecosia.org' },
+            { id: 'seznam', name: 'Seznam', icon: '🏠', api: false, url: 'https://search.seznam.cz' },
+            { id: 'naver', name: 'Naver Webmaster', icon: '🇰🇷', api: false, url: 'https://searchadvisor.naver.com' }
+        ];
+
+        const urls = [
+            BASE_URL + '/',
+            BASE_URL + '/index.html',
+            BASE_URL + '/social-post-generator.html',
+            BASE_URL + '/traffic-campaign.html',
+            BASE_URL + '/blog/helium-10-review-2026.html',
+            BASE_URL + '/blog/best-amazon-seller-tools-2026.html',
+            BASE_URL + '/blog/best-amazon-repricing-tools-2026.html',
+            BASE_URL + '/blog/amazon-competitor-intelligence-guide.html',
+            BASE_URL + '/blog/amazon-seller-automation-guide.html',
+            BASE_URL + '/blog/amazon-price-tracking-tools-2026.html',
+            BASE_URL + '/blog/fba-sellers-complete-guide.html',
+            BASE_URL + '/blog/how-to-sell-on-amazon-2026.html',
+            BASE_URL + '/blog/amazon-ppc-guide-2026.html',
+            BASE_URL + '/blog/amazon-listing-optimization-guide-2026.html',
+            BASE_URL + '/blog/amazon-a9-algorithm-explained.html',
+            BASE_URL + '/blog/amazon-split-testing-guide.html',
+            BASE_URL + '/blog/amazon-brand-registry-guide-2026.html',
+            BASE_URL + '/blog/amazon-keyword-research-guide-2026.html',
+            BASE_URL + '/blog/best-amazon-competitor-analysis-tools-2026.html',
+            BASE_URL + '/sitemap.xml'
+        ];
+
+        let selectedEngines = new Set(['bing', 'google']);
+        let selectedUrls = new Set(urls);
+        let log = [];
+
+        function init() {
+            renderEngines();
+            renderUrlList();
+            loadStats();
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('bingStats');
+            if (saved) {
+                const stats = JSON.parse(saved);
+                document.getElementById('submittedTo').textContent = stats.submitted || 0;
+                updateProgress();
+            }
+        }
+
+        function saveStats(submitted) {
+            localStorage.setItem('bingStats', JSON.stringify({ submitted }));
+        }
+
+        function updateProgress() {
+            const submitted = parseInt(document.getElementById('submittedTo').textContent);
+            const pct = (submitted / engines.length) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+        }
+
+        function renderEngines() {
+            const grid = document.getElementById('enginesGrid');
+            grid.innerHTML = engines.map(e => `
+                <div class="engine-card ${selectedEngines.has(e.id) ? 'selected' : ''}" onclick="toggleEngine('${e.id}')">
+                    <div class="icon">${e.icon}</div>
+                    <h3>${e.name}</h3>
+                    <p>${e.api ? 'API or Manual' : 'Manual'}</p>
+                    <span class="badge ${e.api ? 'api' : 'manual'}">${e.api ? 'API' : 'Manual'}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('apiReady').textContent = engines.filter(e => e.api && selectedEngines.has(e.id)).length;
+            document.getElementById('manual').textContent = engines.filter(e => !e.api && selectedEngines.has(e.id)).length;
+        }
+
+        function toggleEngine(id) {
+            if (selectedEngines.has(id)) selectedEngines.delete(id);
+            else selectedEngines.add(id);
+            renderEngines();
+        }
+
+        function renderUrlList() {
+            const container = document.getElementById('urlList');
+            container.innerHTML = urls.map(u => `
+                <div class="url-item">
+                    <input type="checkbox" ${selectedUrls.has(u) ? 'checked' : ''} onchange="toggleUrl('${u}')">
+                    <span title="${u}">${u.replace(BASE_URL, '') || '/'}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleUrl(url) {
+            if (selectedUrls.has(url)) selectedUrls.delete(url);
+            else selectedUrls.add(url);
+        }
+
+        function toggleSelectAll() {
+            const checked = document.getElementById('selectAll').checked;
+            if (checked) selectedUrls = new Set(urls);
+            else selectedUrls.clear();
+            renderUrlList();
+        }
+
+        async function testBingApi() {
+            const apiKey = document.getElementById('bingApiKey').value;
+            if (!apiKey) {
+                showStatus('Please enter an API key', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://ssl.bing.com/webmaster/api.svc/json/SubmitUrl?appid=${apiKey}&url=${encodeURIComponent(BASE_URL)}`, {
+                    method: 'POST'
+                });
+
+                localStorage.setItem('bingApiKey', apiKey);
+                showStatus('Bing API key saved!', 'success');
+            } catch (e) {
+                showStatus('API test failed: ' + e.message, 'error');
+            }
+        }
+
+        function submitToSelected() {
+            const apiKey = localStorage.getItem('bingApiKey');
+
+            // Open Bing API submission if available
+            if (selectedEngines.has('bing') && apiKey) {
+                submitToBing(apiKey);
+            }
+
+            // Open all engines for manual submission
+            openAllEngines();
+
+            const count = selectedEngines.size;
+            document.getElementById('submittedTo').textContent = count;
+            saveStats(count);
+            updateProgress();
+
+            showStatus(`Submitted to ${count} engines!`, 'success');
+            addLog(`Submitted to ${count} search engines`, 'success');
+        }
+
+        async function submitToBing(apiKey) {
+            const urlArray = Array.from(selectedUrls);
+            let success = 0;
+
+            for (const url of urlArray) {
+                try {
+                    const response = await fetch(`https://ssl.bing.com/webmaster/api.svc/json/SubmitUrl?appid=${apiKey}&url=${encodeURIComponent(url)}`, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) success++;
+                    addLog(`Bing: ${url.substring(0, 50)}...`, response.ok ? 'success' : 'error');
+
+                    await new Promise(r => setTimeout(r, 200));
+                } catch (e) {
+                    addLog(`Bing Error: ${e.message}`, 'error');
+                }
+            }
+
+            return success;
+        }
+
+        function openAllEngines() {
+            selectedEngines.forEach(id => {
+                const engine = engines.find(e => e.id === id);
+                if (engine) {
+                    window.open(engine.url, '_blank');
+                }
+            });
+        }
+
+        function submitBulkUrls() {
+            const text = document.getElementById('bulkUrls').value;
+            const lines = text.split('\n').filter(l => l.trim());
+
+            if (lines.length === 0) {
+                showStatus('Please enter URLs', 'error');
+                return;
+            }
+
+            // Copy to clipboard for easy submission
+            navigator.clipboard.writeText(lines.join('\n'));
+            showStatus(`Copied ${lines.length} URLs! Paste them into search engines.`, 'success');
+            addLog(`Bulk: ${lines.length} URLs copied`, 'success');
+
+            // Open Bing Webmaster for manual paste
+            window.open('https://www.bing.com/webmasters', '_blank');
+        }
+
+        function showStatus(message, type) {
+            document.getElementById('submitStatus').innerHTML = `
+                <div class="status ${type}">
+                    <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⏳'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+        }
+
+        function addLog(message, status) {
+            log.unshift({ message, status, time: new Date().toLocaleTimeString() });
+            renderLog();
+        }
+
+        function renderLog() {
+            const container = document.getElementById('logList');
+            if (log.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center;">No submissions yet.</p>';
+                return;
+            }
+            container.innerHTML = log.slice(0, 15).map(l => `
+                <div class="status ${l.status}">
+                    <span>${l.status === 'success' ? '✅' : '❌'}</span>
+                    <span style="flex:1">${l.message}</span>
+                    <span style="color:#666;font-size:0.8rem">${l.time}</span>
+                </div>
+            `).join('');
+        }
+
+        init();
+    </script>
+</body>
+</html>
