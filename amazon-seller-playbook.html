@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONE-CLICK Amazon Seller Playbook — $19</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .price {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .price-old {
+            font-size: 1.5rem;
+            color: #666;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+
+        .guarantee {
+            color: #4ade80;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .buy-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: none;
+            position: relative;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: left;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .feature p {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .chapters {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chapters h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chapter-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .chapter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .chapter-num {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .chapter-text {
+            color: #ccc;
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-author {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .testimonials h2 {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .testimonial-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .faq {
+            margin-bottom: 40px;
+        }
+
+        .faq h2 {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .faq-answer {
+            color: #aaa;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        .confetti.active {
+            display: block;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="badge">BEST SELLER</div>
+            <h1>The Amazon Seller Competitive Playbook</h1>
+            <p class="subtitle">47 proven strategies to dominate your competition and protect your margins</p>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-value">127+</div>
+                    <div class="stat-label">Sellers using</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$500K+</div>
+                    <div class="stat-label">Saved by users</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">4.8/5</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pricing-card">
+            <div>
+                <span class="price-old">$47</span>
+                <span class="price">$19</span>
+            </div>
+            <p class="guarantee">30-Day Money-Back Guarantee</p>
+            <a href="#" class="buy-btn" id="buyButton" onclick="handleBuy()">
+                GET INSTANT ACCESS
+            </a>
+            <p style="margin-top: 15px; color: #888; font-size: 0.9rem;">
+                Secure checkout via Gumroad
+            </p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔍</div>
+                <h3>Competitor Intelligence</h3>
+                <p>Track competitors 24/7 and get instant alerts when they change prices or run promotions.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💰</div>
+                <h3>Margin Protection</h3>
+                <p>Never lose the Buy Box by underpricing. Protect your margins while staying competitive.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📈</div>
+                <h3>Growth Strategies</h3>
+                <p>Scale from 10 to 10,000 SKUs with proven systems that work in 2026.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Quick Implementation</h3>
+                <p>Implement strategies in under 5 minutes. Start seeing results within 24 hours.</p>
+            </div>
+        </div>
+
+        <div class="chapters">
+            <h2>What's Inside (47 Strategies)</h2>
+            <div class="chapter-list">
+                <div class="chapter">
+                    <div class="chapter-num">1</div>
+                    <div class="chapter-text">Competitor Monitoring Systems That Work</div>
+                </div>
+                <div class="chapter">
+                    <div class="chapter-num">2</div>
+                    <div class="chapter-text">Real-Time Price Alert Configuration</div>
+                </div>
+                <div class="chapter">
+                    <div class="chapter-num">3</div>
+                    <div class="chapter-text">Buy Box Domination Strategies</div>
+                </div>
+                <div class="chapter">
+                    <div class="chapter-num">4</div>
+                    <div class="chapter-text">Margin Protection Formulas</div>
+                </div>
+                <div class="chapter">
+                    <div class="chapter-num">5</div>
+                    <div class="chapter-text">Inventory Optimization Systems</div>
+                </div>
+                <div class="chapter">
+                    <div class="chapter-num">6</div>
+                    <div class="chapter-text">Amazon Algorithm Exploitation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="testimonials">
+            <h2>What Sellers Are Saying</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p class="testimonial-text">"Saved $12,000 in the first month by avoiding a price war that would have destroyed my margins. This playbook paid for itself 600x over."</p>
+                    <p class="testimonial-author">— Marcus J., $250K/month seller</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"Finally understand how to compete without constantly racing to the bottom on price. My margins went from 8% to 24%."</p>
+                    <p class="testimonial-author">— Sarah T., FBA seller since 2019</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"The Buy Box strategies alone were worth 10x the price. I went from 12% to 67% Buy Box ownership."</p>
+                    <p class="testimonial-author">— Dr. Emily P., Private label seller</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">"I was about to quit Amazon. This playbook showed me what I was doing wrong. Now I'm on track for $100K this year."</p>
+                    <p class="testimonial-author">— James R., Full-time seller</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">Is this a physical book or digital?</div>
+                <div class="faq-answer">This is a digital download (PDF). You'll get instant access after purchase.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Do I need any tools to implement these strategies?</div>
+                <div class="faq-answer">Most strategies work with free Amazon tools. Advanced strategies recommend specific tools (Helium 10, Keepa, etc.) which are optional.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">What if it doesn't work for me?</div>
+                <div class="faq-answer">We offer a 30-day money-back guarantee. If you don't see results, email us for a full refund.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Is this for beginners or advanced sellers?</div>
+                <div class="faq-answer">Both! We have strategies for sellers at every level, from those just starting to 7-figure sellers.</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 40px 0;">
+            <p style="color: #888; margin-bottom: 20px;">Join 127+ sellers who are protecting their margins and growing their businesses</p>
+            <a href="#" class="buy-btn" onclick="handleBuy()">
+                GET THE PLAYBOOK — $19
+            </a>
+        </div>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // Check if Gumroad link is configured
+        const gumroadLink = localStorage.getItem('gumroad_product_url');
+
+        if (gumroadLink) {
+            document.getElementById('buyButton').href = gumroadLink;
+        } else {
+            document.getElementById('buyButton').href = 'https://app.gumroad.com/l/amazon-seller-playbook';
+        }
+
+        function handleBuy() {
+            const link = localStorage.getItem('gumroad_product_url') || 'https://app.gumroad.com/l/amazon-seller-playbook';
+
+            // Show confetti on success (after clicking)
+            setTimeout(() => {
+                showConfetti();
+            }, 500);
+
+            // Track purchase intent
+            trackEvent('purchase_intent', {
+                product: 'amazon-seller-playbook',
+                price: 19,
+                source: 'landing_page'
+            });
+        }
+
+        function showConfetti() {
+            const container = document.getElementById('confetti');
+            const colors = ['#ffd700', '#ff8c00', '#4ade80', '#f472b6', '#60a5fa'];
+
+            for (let i = 0; i < 100; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(piece);
+            }
+
+            container.classList.add('active');
+
+            setTimeout(() => {
+                container.innerHTML = '';
+                container.classList.remove('active');
+            }, 5000);
+        }
+
+        function trackEvent(event, data) {
+            const events = JSON.parse(localStorage.getItem('playbook_events') || '[]');
+            events.push({
+                event,
+                data,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('playbook_events', JSON.stringify(events));
+        }
+    </script>
+</body>
+</html>
