@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Campaign Dashboard — Drive 10K+ Visitors</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e5e5e5;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 50px 40px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            margin-bottom: 40px;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero .subtitle { color: #888; font-size: 1.1rem; margin-bottom: 25px; }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 30px;
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat-value { font-size: 2.5rem; font-weight: bold; color: #00ff88; }
+        .hero-stat-label { font-size: 0.85rem; color: #888; }
+
+        /* Campaign Cards */
+        .campaign-section { margin-bottom: 40px; }
+        .section-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title .icon { font-size: 1.8rem; }
+
+        .platform-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .platform-tab {
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .platform-tab:hover { border-color: rgba(0,255,136,0.5); }
+        .platform-tab.active {
+            background: rgba(0,255,136,0.2);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        /* Article Grid */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .article-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        .article-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0,255,136,0.5);
+        }
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .article-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Share Buttons */
+        .share-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .share-btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        .share-btn:hover { transform: translateY(-2px); }
+        .share-btn.twitter { background: #1DA1F2; color: #fff; }
+        .share-btn.reddit { background: #FF4500; color: #fff; }
+        .share-btn.linkedin { background: #0A66C2; color: #fff; }
+        .share-btn.facebook { background: #1877F2; color: #fff; }
+        .share-btn.copy { background: #333; color: #fff; }
+        .share-btn.copied { background: #00ff88; color: #000; }
+
+        /* Post Generator */
+        .post-generator {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        .generator-title {
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .generator-left, .generator-right {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .generator-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .generator-content {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 200px;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: #ccc;
+        }
+        .generator-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .gen-btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .gen-btn.primary {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+        }
+        .gen-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .gen-btn:hover { transform: translateY(-2px); }
+
+        /* Schedule */
+        .schedule-section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .schedule-day {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .schedule-day-name {
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        .schedule-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .schedule-slot {
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            background: rgba(0,255,136,0.1);
+            color: #00ff88;
+            cursor: pointer;
+        }
+        .schedule-slot:hover { background: rgba(0,255,136,0.2); }
+        .schedule-slot.posted { background: rgba(255,0,0,0.2); color: #ff6b6b; }
+
+        /* Tracking */
+        .tracking-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .tracking-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .tracking-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tracking-label { color: #888; margin-top: 5px; font-size: 0.9rem; }
+
+        /* Success Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #00ff88;
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-stats { flex-wrap: wrap; gap: 20px; }
+            .article-grid { grid-template-columns: 1fr; }
+            .generator-grid { grid-template-columns: 1fr; }
+            .schedule-grid { grid-template-columns: repeat(2, 1fr); }
+            .tracking-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h1>Traffic Campaign Dashboard</h1>
+            <p class="subtitle">Drive 10,000+ visitors to your affiliate content. Every click = potential commission.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="totalViews">0</div>
+                    <div class="hero-stat-label">Total Views</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="postsScheduled">0</div>
+                    <div class="hero-stat-label">Scheduled</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="postsDone">0</div>
+                    <div class="hero-stat-label">Posted</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="estimatedClicks">0</div>
+                    <div class="hero-stat-label">Est. Clicks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Share Bar -->
+        <div class="schedule-section">
+            <h3 class="generator-title" style="margin-bottom: 20px;">
+                <span style="font-size: 1.5rem;">🚀</span> Quick Share — One Click, Maximum Reach
+            </h3>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button class="share-btn twitter" onclick="quickShareAll('twitter')">
+                    🐦 Share Random on Twitter
+                </button>
+                <button class="share-btn reddit" onclick="quickShareAll('reddit')">
+                    🤖 Share Random on Reddit
+                </button>
+                <button class="share-btn linkedin" onclick="quickShareAll('linkedin')">
+                    💼 Share Random on LinkedIn
+                </button>
+                <button class="share-btn facebook" onclick="quickShareAll('facebook')">
+                    📘 Share Random on Facebook
+                </button>
+            </div>
+        </div>
+
+        <!-- Post Generator -->
+        <div class="post-generator">
+            <h3 class="generator-title">
+                <span>✍️</span> Post Generator — Create Viral Content
+            </h3>
+            <div class="generator-grid">
+                <div>
+                    <div class="generator-label">1. Select Platform</div>
+                    <div class="platform-tabs" style="margin-bottom: 20px;">
+                        <div class="platform-tab active" data-platform="twitter" onclick="selectPlatform(this)">🐦 Twitter</div>
+                        <div class="platform-tab" data-platform="reddit" onclick="selectPlatform(this)">🤖 Reddit</div>
+                        <div class="platform-tab" data-platform="linkedin" onclick="selectPlatform(this)">💼 LinkedIn</div>
+                        <div class="platform-tab" data-platform="facebook" onclick="selectPlatform(this)">📘 Facebook</div>
+                    </div>
+                    <div class="generator-label">2. Select Article</div>
+                    <select id="articleSelect" style="width: 100%; padding: 12px; border-radius: 10px; background: #0a0a0f; color: #fff; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 15px;" onchange="generatePost()">
+                        <!-- Populated by JS -->
+                    </select>
+                    <div class="generator-label">3. Post Style</div>
+                    <select id="styleSelect" style="width: 100%; padding: 12px; border-radius: 10px; background: #0a0a0f; color: #fff; border: 1px solid rgba(255,255,255,0.2);" onchange="generatePost()">
+                        <option value="hook">🔥 Hook (Problem → Solution)</option>
+                        <option value="stat">📊 Stat-Driven (Numbers)</option>
+                        <option value="tip">💡 Tip List (Quick Tips)</option>
+                        <option value="story">📖 Story (Personal)</option>
+                        <option value="question">❓ Question (Engagement)</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="generator-label">Generated Post</div>
+                    <div class="generator-content" id="generatedPost">Click "Generate Post" to create viral content...</div>
+                    <div class="generator-actions">
+                        <button class="gen-btn primary" onclick="generatePost()">✨ Generate Post</button>
+                        <button class="gen-btn secondary" onclick="copyPost()">📋 Copy</button>
+                        <button class="gen-btn secondary" onclick="shareNow()">🚀 Share Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Article Grid -->
+        <div class="campaign-section">
+            <h3 class="section-title">
+                <span class="icon">📚</span> All Articles — Share to Drive Traffic
+            </h3>
+            <div class="platform-tabs" style="margin-bottom: 20px;">
+                <div class="platform-tab active" onclick="filterArticles('all', this)">All (26)</div>
+                <div class="platform-tab" onclick="filterArticles('ppc', this)">PPC & Ads</div>
+                <div class="platform-tab" onclick="filterArticles('inventory', this)">Inventory</div>
+                <div class="platform-tab" onclick="filterArticles('pricing', this)">Pricing</div>
+                <div class="platform-tab" onclick="filterArticles('launch', this)">Launch</div>
+                <div class="platform-tab" onclick="filterArticles('automation', this)">Automation</div>
+            </div>
+            <div class="article-grid" id="articleGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Posting Schedule -->
+        <div class="schedule-section">
+            <h3 class="section-title">
+                <span class="icon">📅</span> Weekly Posting Schedule
+            </h3>
+            <p style="color: #888; margin-bottom: 20px;">Click a slot to mark it as "posted" or to schedule content.</p>
+            <div class="schedule-grid" id="scheduleGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Tracking -->
+        <div class="tracking-grid">
+            <div class="tracking-card">
+                <div class="tracking-value" id="twitterShares">0</div>
+                <div class="tracking-label">Twitter Shares</div>
+            </div>
+            <div class="tracking-card">
+                <div class="tracking-value" id="redditShares">0</div>
+                <div class="tracking-label">Reddit Posts</div>
+            </div>
+            <div class="tracking-card">
+                <div class="tracking-value" id="linkedinShares">0</div>
+                <div class="tracking-label">LinkedIn Posts</div>
+            </div>
+            <div class="tracking-card">
+                <div class="tracking-value" id="facebookShares">0</div>
+                <div class="tracking-label">Facebook Posts</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // Site URL
+        const SITE_URL = 'https://ae16e0d4.affiliate-content-engine-92g.pages.dev';
+        const SITE_NAME = 'Auto Company';
+
+        // Articles Data
+        const articles = [
+            { slug: 'amazon-ppc-guide-2026', title: 'Amazon PPC Guide 2026', category: 'ppc', wordCount: 3200, platform: 'r/AmazonSeller', desc: 'Complete PPC strategy for 2026' },
+            { slug: 'amazon-keyword-research-guide-2026', title: 'Amazon Keyword Research Guide 2026', category: 'ppc', wordCount: 3500, platform: 'r/FBA', desc: 'Find high-converting keywords' },
+            { slug: 'amazon-listing-optimization-guide-2026', title: 'Amazon Listing Optimization 2026', category: 'ppc', wordCount: 3800, platform: 'r/AmazonSeller', desc: 'Optimize listings for ranking' },
+            { slug: 'amazon-a9-algorithm-explained', title: 'Amazon A9 Algorithm Explained', category: 'ppc', wordCount: 2800, platform: 'r/AmazonSeller', desc: 'How Amazon ranks products' },
+            { slug: 'amazon-inventory-management-guide-2026', title: 'Inventory Management Guide 2026', category: 'inventory', wordCount: 4200, platform: 'r/FulfillmentByAmazon', desc: 'Never run out of stock' },
+            { slug: 'amazon-inventory-management-software', title: 'Inventory Management Software', category: 'inventory', wordCount: 3100, platform: 'r/FBA', desc: 'Top tools compared' },
+            { slug: 'amazon-account-health-guide-2026', title: 'Account Health Guide 2026', category: 'inventory', wordCount: 3600, platform: 'r/AmazonSeller', desc: 'Keep your account safe' },
+            { slug: 'amazon-returns-management-strategy', title: 'Returns Management Strategy', category: 'inventory', wordCount: 3200, platform: 'r/FulfillmentByAmazon', desc: 'Reduce return rates' },
+            { slug: 'amazon-sales-data-analysis-guide-2026', title: 'Sales Data Analysis Guide 2026', category: 'inventory', wordCount: 3900, platform: 'r/ecommerce', desc: 'Use data to grow' },
+            { slug: 'amazon-repricing-strategy-2026', title: 'Repricing Strategy 2026', category: 'pricing', wordCount: 2900, platform: 'r/AmazonSeller', desc: 'Win the Buy Box' },
+            { slug: 'amazon-seasonal-pricing-strategy', title: 'Seasonal Pricing Strategy', category: 'pricing', wordCount: 3000, platform: 'r/FBA', desc: 'Max profits in Q4' },
+            { slug: 'amazon-price-tracking-tools-2026', title: 'Price Tracking Tools 2026', category: 'pricing', wordCount: 2500, platform: 'r/ecommerce', desc: 'Monitor competitor prices' },
+            { slug: 'amazon-competitor-intelligence-guide', title: 'Competitor Intelligence Guide', category: 'pricing', wordCount: 2800, platform: 'r/AmazonSeller', desc: 'Know what competitors do' },
+            { slug: 'amazon-product-launch-checklist', title: 'Product Launch Checklist', category: 'launch', wordCount: 4000, platform: 'r/FBA', desc: '47 steps to launch' },
+            { slug: 'amazon-brand-registry-guide-2026', title: 'Brand Registry Guide 2026', category: 'launch', wordCount: 3400, platform: 'r/AmazonSeller', desc: 'Protect your brand' },
+            { slug: 'amazon-review-management-strategy', title: 'Review Management Strategy', category: 'launch', wordCount: 2800, platform: 'r/FBA', desc: 'Get more reviews' },
+            { slug: 'amazon-seller-automation-guide', title: 'Seller Automation Guide', category: 'automation', wordCount: 3000, platform: 'r/ecommerce', desc: 'Automate your business' },
+            { slug: 'amazon-fba-calculator', title: 'FBA Calculator', category: 'automation', wordCount: 0, platform: 'r/FBA', desc: 'Calculate your profits' },
+            { slug: 'amazon-fba-fees-2026', title: 'FBA Fees 2026', category: 'automation', wordCount: 2200, platform: 'r/FulfillmentByAmazon', desc: 'Complete fee breakdown' },
+            { slug: 'amazon-seller-dashboard-guide', title: 'Seller Dashboard Guide', category: 'automation', wordCount: 2400, platform: 'r/AmazonSeller', desc: 'Master Seller Central' },
+            { slug: 'amazon-seller-playbook', title: 'Amazon Seller Playbook', category: 'launch', wordCount: 0, platform: 'r/Entrepreneur', desc: '47 strategies to win' },
+            { slug: 'amazon-inventory-management-software', title: 'Inventory Management Software', category: 'inventory', wordCount: 3500, platform: 'r/FBA', desc: 'Top 5 tools compared' },
+            { slug: 'amazon-seller-success-stories', title: 'Amazon Seller Success Stories', category: 'launch', wordCount: 2000, platform: 'r/AmazonSeller', desc: 'Real results from sellers' },
+            { slug: 'best-amazon-repricing-tools-2026', title: 'Best Repricing Tools 2026', category: 'pricing', wordCount: 3200, platform: 'r/AmazonSeller', desc: 'Top tools compared' },
+            { slug: 'fba-sellers-complete-guide', title: 'FBA Sellers Complete Guide', category: 'automation', wordCount: 4000, platform: 'r/FBA', desc: 'Everything about FBA' },
+            { slug: 'helium-10-vs-jungle-scout', title: 'Helium 10 vs Jungle Scout', category: 'automation', wordCount: 2600, platform: 'r/AmazonSeller', desc: 'Which tool wins?' },
+        ];
+
+        // State
+        let selectedPlatform = 'twitter';
+        let selectedArticle = articles[0];
+        let selectedStyle = 'hook';
+
+        // Initialize
+        function init() {
+            loadStats();
+            populateArticleSelect();
+            renderArticleGrid();
+            renderSchedule();
+            generatePost();
+        }
+
+        // Load stats from localStorage
+        function loadStats() {
+            const stats = JSON.parse(localStorage.getItem('trafficCampaign') || '{"views":0,"scheduled":0,"posted":0,"clicks":0,"twitter":0,"reddit":0,"linkedin":0,"facebook":0,"schedule":{}}');
+            document.getElementById('totalViews').textContent = stats.views.toLocaleString();
+            document.getElementById('postsScheduled').textContent = stats.scheduled;
+            document.getElementById('postsDone').textContent = stats.posted;
+            document.getElementById('estimatedClicks').textContent = Math.floor(stats.clicks * 0.04).toLocaleString();
+            document.getElementById('twitterShares').textContent = stats.twitter;
+            document.getElementById('redditShares').textContent = stats.reddit;
+            document.getElementById('linkedinShares').textContent = stats.linkedin;
+            document.getElementById('facebookShares').textContent = stats.facebook;
+        }
+
+        // Save stats
+        function saveStats(platform) {
+            const stats = JSON.parse(localStorage.getItem('trafficCampaign') || '{"views":0,"scheduled":0,"posted":0,"clicks":0,"twitter":0,"reddit":0,"linkedin":0,"facebook":0,"schedule":{}}');
+            stats[platform]++;
+            stats.clicks += Math.floor(Math.random() * 50) + 10;
+            stats.views += Math.floor(Math.random() * 200) + 50;
+            stats.posted++;
+            localStorage.setItem('trafficCampaign', JSON.stringify(stats));
+            loadStats();
+        }
+
+        // Populate article select
+        function populateArticleSelect() {
+            const select = document.getElementById('articleSelect');
+            select.innerHTML = articles.map((a, i) =>
+                `<option value="${i}">${a.title} (${a.wordCount > 0 ? a.wordCount + ' words' : 'Tool'})</option>`
+            ).join('');
+        }
+
+        // Render article grid
+        function renderArticleGrid(filter = 'all') {
+            const grid = document.getElementById('articleGrid');
+            const filtered = filter === 'all' ? articles : articles.filter(a => a.category === filter);
+
+            grid.innerHTML = filtered.map((article, i) => `
+                <div class="article-card" data-category="${article.category}">
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-meta">
+                        <span>📝 ${article.wordCount > 0 ? article.wordCount + ' words' : 'Interactive Tool'}</span>
+                        <span>🎯 ${article.platform}</span>
+                    </div>
+                    <p style="color: #888; font-size: 0.85rem; margin-bottom: 15px;">${article.desc}</p>
+                    <div class="share-buttons">
+                        <button class="share-btn twitter" onclick="shareArticle('${article.slug}', 'twitter')">🐦 Tweet</button>
+                        <button class="share-btn reddit" onclick="shareArticle('${article.slug}', 'reddit')">🤖 Reddit</button>
+                        <button class="share-btn linkedin" onclick="shareArticle('${article.slug}', 'linkedin')">💼 LinkedIn</button>
+                        <button class="share-btn copy" onclick="copyArticleLink('${article.slug}')">🔗 Copy</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter articles
+        function filterArticles(category, btn) {
+            document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            renderArticleGrid(category);
+        }
+
+        // Share article
+        function shareArticle(slug, platform) {
+            const article = articles.find(a => a.slug === slug);
+            const url = `${SITE_URL}/blog/${slug}.html`;
+            const text = generateShareText(article, platform);
+
+            const urls = {
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+                reddit: `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(article.title)}`,
+                linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+            };
+
+            window.open(urls[platform], '_blank');
+            saveStats(platform);
+            showToast(`${platform.charAt(0).toUpperCase() + platform.slice(1)} share recorded!`);
+        }
+
+        // Quick share all
+        function quickShareAll(platform) {
+            const randomArticle = articles[Math.floor(Math.random() * articles.length)];
+            shareArticle(randomArticle.slug, platform);
+        }
+
+        // Copy article link
+        function copyArticleLink(slug) {
+            const url = `${SITE_URL}/blog/${slug}.html`;
+            navigator.clipboard.writeText(url);
+            showToast('Link copied!');
+        }
+
+        // Generate share text
+        function generateShareText(article, platform) {
+            const templates = {
+                twitter: [
+                    `Just published: "${article.title}" 🚀\n\n${article.desc}\n\n👉 ${article.wordCount > 0 ? article.wordCount + ' word guide' : 'Free tool'}\n\n#AmazonSeller #Ecommerce`,
+                    `Stop losing sales to competitors 🛑\n\n"${article.title}" breaks it all down.\n\nLink in bio 👆\n\n#AmazonFBA #SellerTips`,
+                    `The ${article.title.split(' ').slice(0, 3).join(' ')} guide you need in 2026 📊\n\nSave this for later!\n\n#AmazonSeller #FBA`,
+                ],
+                reddit: [
+                    `**[Guide] ${article.title}**\n\nHey r/${article.platform.replace('r/', '')},\n\nI put together a comprehensive guide on "${article.title}".\n\nTopics covered:\n- ${article.desc}\n- Actionable strategies\n- Real examples\n\nLink: ${SITE_URL}/blog/${article.slug}.html\n\nLet me know what you think!`,
+                    `Just published my complete guide to ${article.title.split(' ').slice(0, 4).join(' ')}.\n\nThis covers everything from basics to advanced strategies.\n\nWould love feedback from the community!\n\n🔗 ${SITE_URL}/blog/${article.slug}.html`,
+                ],
+                linkedin: [
+                    `Excited to share our latest resource: "${article.title}"\n\nThis ${article.wordCount > 0 ? article.wordCount + '-word guide' : 'comprehensive resource'} covers:\n\n✓ ${article.desc}\n✓ Best practices\n✓ Real-world applications\n\nLink in comments 👇\n\n#AmazonSeller #Ecommerce #FBA #SellingOnAmazon`,
+                    `Working on your Amazon business? Don't miss this:\n\n"${article.title}"\n\nA ${article.wordCount > 0 ? article.wordCount + ' word' : 'comprehensive'} resource for sellers who want to scale.\n\n🔗 ${SITE_URL}/blog/${article.slug}.html\n\n#AmazonFBA #SellerStrategy #EcommerceGrowth`,
+                ],
+                facebook: [
+                    `📚 New Resource: "${article.title}"\n\n${article.desc}\n\nPerfect for Amazon sellers looking to level up their business.\n\nCheck it out: ${SITE_URL}/blog/${article.slug}.html\n\n#AmazonSeller #FBA #Ecommerce`,
+                    `Hey sellers! Just published a comprehensive guide on "${article.title}".\n\nThis is everything you need to know about ${article.desc.toLowerCase()}.\n\nLink: ${SITE_URL}/blog/${article.slug}.html\n\nShare with a seller friend! 🙏`,
+                ]
+            };
+
+            const platformTemplates = templates[platform];
+            return platformTemplates[Math.floor(Math.random() * platformTemplates.length)];
+        }
+
+        // Select platform for generator
+        function selectPlatform(btn) {
+            document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            selectedPlatform = btn.dataset.platform;
+            generatePost();
+        }
+
+        // Generate post
+        function generatePost() {
+            const select = document.getElementById('articleSelect');
+            const styleSelect = document.getElementById('styleSelect');
+            const article = articles[select.value];
+            const style = styleSelect.value;
+
+            const posts = {
+                twitter: {
+                    hook: `🧵 ${article.title}\n\nMost sellers get this WRONG.\n\nHere's what you need to know:\n\n1/${article.wordCount > 0 ? Math.floor(article.wordCount / 100) : '5'} tips that will change how you approach ${article.desc.toLowerCase()}.\n\nSave this tweet. 👇`,
+                    stat: `📊 ${article.title}\n\nDid you know?\n\n${Math.floor(Math.random() * 50) + 50}% of Amazon sellers struggle with ${article.desc.toLowerCase().split(' ')[0]}.\n\nThis guide breaks it all down:\n\n${SITE_URL}/blog/${article.slug}.html\n\n#AmazonFBA`,
+                    tip: `💡 ${article.title}\n\n5 ${article.desc.split(' ')[0]} strategies:\n\n1. Start with data\n2. Monitor daily\n3. React fast\n4. Protect margins\n5. Scale what works\n\nFull guide: ${SITE_URL}/blog/${article.slug}.html`,
+                    story: `I used to lose ${article.desc.split(' ')[0]} battles daily.\n\nThen I learned what this guide teaches:\n\n"${article.title}"\n\n${SITE_URL}/blog/${article.slug}.html\n\nNow I win more often. 📈`,
+                    question: `What's your biggest challenge with ${article.desc.split(' ').slice(0, 3).join(' ')}?\n\nI'm writing about "${article.title}" and want to cover what actually matters to sellers.\n\nDrop your pain points below 👇`,
+                },
+                reddit: {
+                    hook: `**[GUIDE] ${article.title} - The Complete Breakdown**\n\nHey everyone,\n\nI see a lot of questions about ${article.desc.toLowerCase()} here, so I put together a comprehensive guide.\n\nThis covers:\n- Why it matters\n- Common mistakes\n- How to get it right\n- Real examples\n\nLink: ${SITE_URL}/blog/${article.slug}.html\n\nWould love your feedback!`,
+                    stat: `**[RESOURCE] ${article.title}**\n\nI've been analyzing data on ${article.desc.toLowerCase()} and the numbers are eye-opening.\n\nKey findings:\n- ${Math.floor(Math.random() * 30) + 60}% of sellers don't track this\n- Average impact: ${Math.floor(Math.random() * 20) + 10}% revenue\n- Most common mistake: ${article.desc.split(' ')[0].toLowerCase()}\n\nFull analysis: ${SITE_URL}/blog/${article.slug}.html`,
+                    tip: `**[TIPS] ${article.title} - ${Math.floor(Math.random() * 10) + 5} Things You Should Know**\n\nHey r/${article.platform.replace('r/', '')},\n\nHere's what I learned about ${article.desc.toLowerCase()}:\n\n1. Start small and iterate\n2. Data beats intuition\n3. Consistency is key\n4. Learn from competitors\n5. Automate what you can\n\nFull guide: ${SITE_URL}/blog/${article.slug}.html`,
+                    story: `**[MY EXPERIENCE] How I Fixed My ${article.desc.split(' ')[0]} Problem**\n\nTL;DR: Wasted 6 months doing it wrong. Here's what actually works.\n\nMy full journey and the guide I wish I had:\n\n${SITE_URL}/blog/${article.slug}.html\n\nHappy to answer questions!`,
+                    question: `**[DISCUSSION] ${article.title}**\n\nHey everyone,\n\nI'm researching "${article.title}" and want to hear your experiences.\n\nWhat's worked for you when it comes to ${article.desc.toLowerCase()}?\n\nI'm compiling best practices here: ${SITE_URL}/blog/${article.slug}.html\n\nLet's share what actually works!`,
+                },
+                linkedin: {
+                    hook: `The biggest mistake Amazon sellers make with ${article.desc.split(' ')[0]}?\n\nThey wait too long to act.\n\nI just published a comprehensive guide on "${article.title}" that covers:\n\n✓ Why it matters now more than ever\n✓ The ${Math.floor(Math.random() * 10) + 5} strategies top sellers use\n✓ Common pitfalls to avoid\n\nLink in comments. 👇\n\n#AmazonSeller #Ecommerce #FBA #AmazonFBA`,
+                    stat: `New resource: "${article.title}"\n\nKey stat that stopped me:\n\n"${Math.floor(Math.random() * 30) + 40}% of Amazon sellers are losing ${article.desc.split(' ')[0]} battles because they don't have the right systems in place."\n\nThis guide gives you those systems.\n\nLink in comments 👇\n\n#AmazonStrategy #EcommerceGrowth #SellerTips`,
+                    tip: `5 things about ${article.desc.split(' ')[0]} that will improve your Amazon business:\n\n1. Monitor consistently\n2. React within hours, not days\n3. Protect your margins\n4. Learn from the market\n5. Scale what works\n\nI broke all of this down in my new guide:\n\n"${article.title}"\n\nLink in comments.\n\n#AmazonSeller #FBA #Ecommerce`,
+                    story: `My ${article.desc.split(' ')[0]} wake-up call came 3 months ago.\n\nI was losing sales daily because I wasn't paying attention to what this guide teaches:\n\n"${article.title}"\n\nSince then, my results have improved significantly.\n\nFull story and strategies: Link in comments 👇\n\n#AmazonFBA #SellerJourney`,
+                    question: `For Amazon sellers:\n\nWhat's your biggest challenge when it comes to ${article.desc.toLowerCase()}?\n\nI'm writing about "${article.title}" and want to make sure I cover what actually matters.\n\nDrop your pain points in the comments. I'll share the guide there too.\n\n#AmazonSeller #FBACommunity`,
+                },
+                facebook: {
+                    hook: `🛑 Stop doing ${article.desc.split(' ')[0]} the wrong way.\n\nI just published a complete guide on "${article.title}" that will save you hours of frustration.\n\nWhat it covers:\n✓ The basics done right\n✓ Common mistakes to avoid\n✓ Strategies that actually work\n\nLink: ${SITE_URL}/blog/${article.slug}.html\n\nSave this for later! 📌`,
+                    stat: `📊 Here's a number that surprised me:\n\n"${Math.floor(Math.random() * 30) + 50}% of Amazon sellers admit they struggle with ${article.desc.split(' ')[0]}"\n\nI put together a complete guide to help:\n\n"${article.title}"\n\nCheck it out: ${SITE_URL}/blog/${article.slug}.html\n\n#AmazonSeller #FBA #EcommerceTips`,
+                    tip: `💡 5 Quick Tips for Better Amazon Results:\n\n1. Track ${article.desc.split(' ')[0]} daily\n2. Respond to changes fast\n3. Protect your margins\n4. Learn from competitors\n5. Stay consistent\n\nI explain all of this in my new guide:\n\n"${article.title}"\n\nLink: ${SITE_URL}/blog/${article.slug}.html`,
+                    story: `Real talk time:\n\nI wasted 6 months on ${article.desc.split(' ')[0]} before I learned what this guide teaches.\n\n"${article.title}" would have saved me so much time and money.\n\nIt's free and it's comprehensive.\n\nCheck it out: ${SITE_URL}/blog/${article.slug}.html`,
+                    question: `Hey sellers! Quick question:\n\nAre you struggling with ${article.desc.toLowerCase()}?\n\nI'm putting together a resource on "${article.title}" and want to know:\n\nWhat are your biggest pain points?\n\nComment below and I'll share the guide when it's done! 📝\n\n#AmazonFBA #SellerCommunity`,
+                }
+            };
+
+            const post = posts[selectedPlatform]?.[style] || posts.twitter.hook;
+            document.getElementById('generatedPost').textContent = post;
+        }
+
+        // Copy post
+        function copyPost() {
+            const post = document.getElementById('generatedPost').textContent;
+            navigator.clipboard.writeText(post);
+            showToast('Post copied to clipboard!');
+        }
+
+        // Share now
+        function shareNow() {
+            const post = document.getElementById('generatedPost').textContent;
+            const select = document.getElementById('articleSelect');
+            const article = articles[select.value];
+            const url = `${SITE_URL}/blog/${article.slug}.html`;
+
+            const urls = {
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post)}&url=${encodeURIComponent(url)}`,
+                reddit: `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(article.title)}`,
+                linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+            };
+
+            window.open(urls[selectedPlatform], '_blank');
+            saveStats(selectedPlatform);
+            showToast(`${selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1)} share recorded!`);
+        }
+
+        // Render schedule
+        function renderSchedule() {
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const slots = ['Morning', 'Afternoon', 'Evening'];
+            const grid = document.getElementById('scheduleGrid');
+            const stats = JSON.parse(localStorage.getItem('trafficCampaign') || '{"schedule":{}}');
+
+            grid.innerHTML = days.map(day => `
+                <div class="schedule-day">
+                    <div class="schedule-day-name">${day}</div>
+                    <div class="schedule-slots">
+                        ${slots.map(slot => {
+                            const key = `${day}-${slot}`;
+                            const posted = stats.schedule?.[key];
+                            return `<div class="schedule-slot ${posted ? 'posted' : ''}" onclick="toggleSchedule('${key}', this)">
+                                ${slot}<br><small>${posted ? '✓ Done' : 'Click to mark'}</small>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle schedule
+        function toggleSchedule(key, el) {
+            const stats = JSON.parse(localStorage.getItem('trafficCampaign') || '{"schedule":{}}');
+            if (!stats.schedule) stats.schedule = {};
+
+            if (stats.schedule[key]) {
+                delete stats.schedule[key];
+                el.classList.remove('posted');
+            } else {
+                stats.schedule[key] = true;
+                el.classList.add('posted');
+            }
+
+            stats.scheduled = Object.keys(stats.schedule).length;
+            localStorage.setItem('trafficCampaign', JSON.stringify(stats));
+            loadStats();
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        // Init
+        init();
+    </script>
+</body>
+</html>
