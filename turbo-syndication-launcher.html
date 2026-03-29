@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Syndication Launcher — Auto Company</title>
+    <meta name="description" content="One-click syndication to Dev.to, Medium, Hashnode, Twitter, Reddit. Multiply your traffic 10x in minutes.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 20px; border-bottom: 1px solid #333; margin-bottom: 30px; }
+        h1 { font-size: 2.5rem; margin-bottom: 15px; background: linear-gradient(135deg, #ff6b6b, #ffd93d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: #888; font-size: 1.1rem; margin-bottom: 20px; }
+        .quick-stats { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .stat { text-align: center; padding: 15px 25px; background: #1a1a2e; border-radius: 12px; }
+        .stat-value { font-size: 1.8rem; color: #ff6b6b; font-weight: bold; }
+        .stat-label { color: #888; font-size: 0.85rem; margin-top: 5px; }
+        .platform-bar { display: flex; gap: 10px; padding: 15px 20px; background: #1a1a2e; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .platform-label { color: #fff; font-weight: 600; margin-right: 10px; }
+        .plat-btn { padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; border: none; cursor: pointer; }
+        .plat-btn:hover { transform: translateY(-2px); }
+        .devto { background: #0a0a0f; color: #fff; }
+        .devto:hover { background: #1a1a2e; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .medium { background: #000; color: #fff; border: 1px solid #333; }
+        .medium:hover { background: #1a1a2e; }
+        .hashnode { background: #2962ff; color: #fff; }
+        .hashnode:hover { background: #1e3a8a; }
+        .twitter { background: #1da1f2; color: #fff; }
+        .twitter:hover { background: #0d8ddb; }
+        .reddit { background: #ff4500; color: #fff; }
+        .reddit:hover { background: #cc3700; }
+        .linkedin { background: #0077b5; color: #fff; }
+        .linkedin:hover { background: #005a8c; }
+        .copy-btn { background: #00ff88; color: #000; }
+        .copy-btn:hover { background: #00cc6a; }
+        .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
+        .article-card { background: #1a1a2e; border-radius: 16px; padding: 20px; border: 1px solid #333; transition: all 0.3s; }
+        .article-card:hover { border-color: #ff6b6b; }
+        .article-card.syndicated { border-color: #00ff88; }
+        .article-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .article-title { font-size: 1.1rem; color: #fff; line-height: 1.4; }
+        .syndicated-badge { background: #00ff88; color: #000; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .article-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
+        .tag { background: #0a0a0f; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; color: #888; }
+        .article-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .action-btn { padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; display: flex; align-items: center; gap: 6px; border: none; cursor: pointer; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .action-btn.copy { background: #00ff88; color: #000; }
+        .action-btn.devto { background: #0a0a0f; color: #fff; border: 1px solid #444; }
+        .action-btn.medium { background: #000; color: #fff; border: 1px solid #333; }
+        .action-btn.hashnode { background: #2962ff; color: #fff; }
+        .action-btn.twitter { background: #1da1f2; color: #fff; }
+        .action-btn.reddit { background: #ff4500; color: #fff; }
+        .action-btn.linkedin { background: #0077b5; color: #fff; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #00ff88; color: #000; padding: 15px 25px; border-radius: 10px; font-weight: 600; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .legend { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; color: #888; font-size: 0.9rem; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .progress-bar { background: #1a1a2e; border-radius: 10px; padding: 15px 20px; margin-bottom: 30px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .progress-label { color: #fff; font-weight: 600; }
+        .progress-track { flex: 1; min-width: 200px; height: 10px; background: #0a0a0f; border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #00ff88, #00cc6a); border-radius: 5px; transition: width 0.5s ease; }
+        .progress-count { color: #00ff88; font-weight: bold; }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; background: #1a1a2e; color: #888; border: 1px solid #333; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+        .filter-btn:hover, .filter-btn.active { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+        @media (max-width: 768px) {
+            .articles-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+            .platform-bar { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Turbo Syndication Launcher</h1>
+            <p class="subtitle">One-click syndication to all platforms. Multiply your traffic 10x.</p>
+            <div class="quick-stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalArticles">44</div>
+                    <div class="stat-label">Articles</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="syndicatedCount">0</div>
+                    <div class="stat-label">Syndicated</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="potentialViews">0</div>
+                    <div class="stat-label">Potential Views</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-bar">
+            <span class="progress-label">Syndication Progress:</span>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <span class="progress-count"><span id="progressPercent">0</span>%</span>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="unsyndicated">Unsyndicated</button>
+            <button class="filter-btn" data-filter="syndicated">Syndicated</button>
+        </div>
+
+        <div id="articlesContainer"></div>
+
+        <div class="platform-bar" style="position: sticky; bottom: 0; margin-top: 30px;">
+            <span class="platform-label">Quick Actions:</span>
+            <button class="plat-btn devto" onclick="syndicateAll('devto')">Open All on Dev.to</button>
+            <button class="plat-btn medium" onclick="syndicateAll('medium')">Open All on Medium</button>
+            <button class="plat-btn hashnode" onclick="syndicateAll('hashnode')">Open All on Hashnode</button>
+            <button class="plat-btn twitter" onclick="syndicateAll('twitter')">Copy All Twitter Threads</button>
+            <button class="plat-btn reddit" onclick="syndicateAll('reddit')">Copy All Reddit Posts</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied!</div>
+
+    <script>
+        const SITE_URL = "https://ae16e0d4.affiliate-content-engine-92g.pages.dev";
+
+        const articles = [
+            { slug: "amazon-ppc-guide-2026", title: "The Complete Amazon PPC Guide for 2026", tags: ["amazon", "ppc", "advertising"], summary: "Learn everything about Amazon PPC advertising including campaign types, bidding strategies, and optimization techniques." },
+            { slug: "amazon-repricing-strategy-2026", title: "Amazon Repricing Strategies That Win the Buy Box", tags: ["amazon", "repricing", "buybox"], summary: "Master Amazon repricing with strategies that actually win the Buy Box in 2026." },
+            { slug: "amazon-competitor-intelligence-guide", title: "The Ultimate Guide to Amazon Competitor Intelligence", tags: ["amazon", "competitor", "intelligence"], summary: "Monitor and outsmart your Amazon competitors with proven intelligence strategies." },
+            { slug: "amazon-fba-calculator", title: "Free Amazon FBA Calculator: Calculate Your Profits", tags: ["amazon", "fba", "calculator"], summary: "Calculate your true FBA costs and profits with our free calculator tool." },
+            { slug: "amazon-product-launch-checklist", title: "The Complete Amazon Product Launch Checklist", tags: ["amazon", "launch", "checklist"], summary: "Everything you need for a successful Amazon product launch in 2026." },
+            { slug: "amazon-seller-success-stories", title: "Amazon Seller Success Stories That Will Inspire You", tags: ["amazon", "success", "stories"], summary: "Real success stories from Amazon sellers who scaled their businesses." },
+            { slug: "helium-10-vs-jungle-scout", title: "Helium 10 vs Jungle Scout: The Ultimate Comparison", tags: ["helium10", "junglescout", "comparison"], summary: "Which Amazon seller tool is right for you? Deep comparison of features and pricing." },
+            { slug: "keepa-vs-camelcamelcamel", title: "Keepa vs CamelCamelCamel: Price Tracking Compared", tags: ["keepa", "camelcamelcamel", "tracking"], summary: "Compare the best Amazon price tracking tools for smart buying decisions." },
+            { slug: "buy-box-strategy-amazon", title: "Buy Box Strategy: How to Win and Keep It", tags: ["buybox", "strategy", "amazon"], summary: "Proven strategies to win the Amazon Buy Box and keep your competitive edge." },
+            { slug: "amazon-fba-fees-2026", title: "Amazon FBA Fees Guide 2026: Complete Breakdown", tags: ["fba", "fees", "amazon"], summary: "Understand all Amazon FBA fees and how to minimize your costs in 2026." },
+            { slug: "best-amazon-product-research-tools", title: "Best Amazon Product Research Tools for 2026", tags: ["research", "tools", "amazon"], summary: "Top-rated tools to find winning products on Amazon this year." },
+            { slug: "how-to-sell-on-amazon-2026", title: "How to Sell on Amazon in 2026: Complete Guide", tags: ["selling", "guide", "beginners"], summary: "Start selling on Amazon with this comprehensive step-by-step guide." },
+            { slug: "amazon-seller-dashboard-guide", title: "Amazon Seller Dashboard: Complete Usage Guide", tags: ["dashboard", "analytics", "guide"], summary: "Master the Amazon Seller Central dashboard for better business insights." },
+            { slug: "amazon-price-tracking-tools-2026", title: "Best Amazon Price Tracking Tools 2026", tags: ["tracking", "price", "tools"], summary: "Track competitor prices automatically with these top-rated tools." },
+            { slug: "fba-sellers-complete-guide", title: "FBA Sellers Complete Guide to Amazon Success", tags: ["fba", "guide", "complete"], summary: "Everything FBA sellers need to know for Amazon success." },
+            { slug: "jungle-scout-alternatives-2026", title: "Jungle Scout Alternatives: Top Tools Compared", tags: ["alternatives", "research", "tools"], summary: "Find the best Jungle Scout alternative for your Amazon business." },
+            { slug: "best-amazon-seller-tools-2026", title: "Best Amazon Seller Tools for 2026", tags: ["tools", "seller", "amazon"], summary: "Essential tools every Amazon seller needs in 2026." },
+            { slug: "helium-10-review-2026", title: "Helium 10 Review 2026: Is It Worth It?", tags: ["helium10", "review", "analysis"], summary: "Honest review of Helium 10 features, pricing, and value." },
+            { slug: "amazon-seller-automation-guide", title: "Amazon Seller Automation Guide 2026", tags: ["automation", "guide", "tools"], summary: "Automate your Amazon business for scale and efficiency." },
+            { slug: "best-amazon-repricing-tools-2026", title: "Best Amazon Repricing Tools 2026", tags: ["repricing", "tools", "automation"], summary: "Compare the top repricing tools to win the Buy Box automatically." },
+            { slug: "amazon-listing-optimization-guide-2026", title: "Amazon Listing Optimization Guide 2026", tags: ["listing", "optimization", "seo"], summary: "Optimize your Amazon listings for maximum visibility and sales." },
+            { slug: "amazon-a9-algorithm-explained", title: "Amazon A9 Algorithm Explained", tags: ["a9", "algorithm", "seo"], summary: "How Amazon's search algorithm works and how to rank higher." },
+            { slug: "amazon-split-testing-guide", title: "Amazon Split Testing: Complete Guide", tags: ["split-testing", "optimization", "testing"], summary: "Test and optimize your Amazon listings with A/B testing." },
+            { slug: "amazon-returns-management-strategy", title: "Amazon Returns Management Strategy", tags: ["returns", "management", "strategy"], summary: "Handle Amazon returns efficiently and reduce refund rates." },
+            { slug: "amazon-brand-registry-guide-2026", title: "Amazon Brand Registry Guide 2026", tags: ["brand", "registry", "protection"], summary: "Protect your brand and unlock exclusive Amazon benefits." },
+            { slug: "amazon-account-health-guide-2026", title: "Amazon Account Health Guide 2026", tags: ["account", "health", "compliance"], summary: "Maintain perfect account health and avoid suspensions." },
+            { slug: "amazon-inventory-management-guide-2026", title: "Amazon Inventory Management Guide 2026", tags: ["inventory", "management", "fba"], summary: "Master inventory management to avoid stockouts and overstocking." },
+            { slug: "amazon-inventory-management-software", title: "Best Amazon Inventory Management Software", tags: ["inventory", "software", "tools"], summary: "Software solutions for perfect Amazon inventory control." },
+            { slug: "amazon-keyword-research-guide-2026", title: "Amazon Keyword Research Guide 2026", tags: ["keyword", "research", "seo"], summary: "Find the best keywords to rank your Amazon products." },
+            { slug: "amazon-review-management-strategy", title: "Amazon Review Management Strategy", tags: ["reviews", "management", "strategy"], summary: "Get more reviews and handle negative feedback professionally." },
+            { slug: "amazon-sales-data-analysis-guide-2026", title: "Amazon Sales Data Analysis Guide", tags: ["analytics", "data", "sales"], summary: "Analyze your Amazon sales data for better decisions." },
+            { slug: "amazon-seasonal-pricing-strategy", title: "Amazon Seasonal Pricing Strategy", tags: ["seasonal", "pricing", "strategy"], summary: "Optimize your pricing for seasonal demand patterns." },
+            { slug: "amazon-sponsored-products-strategy", title: "Amazon Sponsored Products Strategy 2026", tags: ["sponsored", "ppc", "ads"], summary: "Master Amazon Sponsored Products for profitable advertising." },
+            { slug: "best-amazon-competitor-analysis-tools-2026", title: "Best Amazon Competitor Analysis Tools 2026", tags: ["competitor", "analysis", "tools"], summary: "Tools to spy on your Amazon competitors and win." },
+            { slug: "guest-post-outreach", title: "Guest Post Outreach for Amazon Sellers", tags: ["guest-post", "outreach", "traffic"], summary: "Build backlinks and traffic with guest posting strategies." }
+        ];
+
+        // Load syndicated state from localStorage
+        function getSyndicated() {
+            const stored = localStorage.getItem('syndicatedArticles');
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function saveSyndicated(syndicated) {
+            localStorage.setItem('syndicatedArticles', JSON.stringify(syndicated));
+        }
+
+        function markSyndicated(slug, platform) {
+            const syndicated = getSyndicated();
+            if (!syndicated[slug]) syndicated[slug] = [];
+            if (!syndicated[slug].includes(platform)) {
+                syndicated[slug].push(platform);
+            }
+            saveSyndicated(syndicated);
+            renderArticles();
+            updateStats();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function copyToClipboard(text, label) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${label} copied!`);
+            });
+        }
+
+        function generateTwitterThread(article) {
+            const thread = `🧵 ${article.title}
+
+Here's what every Amazon seller needs to know in 2026:
+
+${article.summary}
+
+${article.tags.map(t => '#' + t.replace('-', '')).join(' ')}
+
+#AmazonSellers #Ecommerce
+
+👇 Drop your questions below 👇`;
+            return thread;
+        }
+
+        function generateRedditPost(article) {
+            return `**${article.title}**
+
+${article.summary}
+
+**Key Topics Covered:**
+${article.tags.map(t => `- #${t.replace('-', '')}`).join('\n')}
+
+Source: ${SITE_URL}/blog/${article.slug}.html
+
+---
+
+*What challenges are you facing with Amazon selling?*`;
+        }
+
+        function generateLinkedInPost(article) {
+            return `🎯 ${article.title}
+
+As Amazon sellers, we all face the same challenges: competition, pricing pressure, and staying profitable.
+
+${article.summary}
+
+What strategies have worked best for your Amazon business?
+
+👇 Comment below - I'd love to hear your thoughts!
+
+#AmazonSellers #Ecommerce #FBA #AmazonFBA`;
+        }
+
+        function openDevto(article) {
+            const url = `https://dev.to/new/story`;
+            markSyndicated(article.slug, 'devto');
+            window.open(url, '_blank');
+            setTimeout(() => {
+                const content = `Title: ${article.title}
+
+Tags: ${article.tags.join(', ')}
+
+${article.summary}
+
+Read the full guide: ${SITE_URL}/blog/${article.slug}.html`;
+                copyToClipboard(content, 'Dev.to content');
+            }, 500);
+        }
+
+        function openMedium(article) {
+            const url = `https://medium.com/new/story`;
+            markSyndicated(article.slug, 'medium');
+            window.open(url, '_blank');
+            setTimeout(() => {
+                const content = `${article.title}
+
+${article.summary}
+
+${article.tags.join(' ')}`;
+                copyToClipboard(content, 'Medium content');
+            }, 500);
+        }
+
+        function openHashnode(article) {
+            const url = `https://hashnode.com/new/story`;
+            markSyndicated(article.slug, 'hashnode');
+            window.open(url, '_blank');
+            setTimeout(() => {
+                const content = `Title: ${article.title}
+
+Tags: ${article.tags.join(', ')}
+
+${article.summary}
+
+Read more: ${SITE_URL}/blog/${article.slug}.html`;
+                copyToClipboard(content, 'Hashnode content');
+            }, 500);
+        }
+
+        function copyTwitter(article) {
+            markSyndicated(article.slug, 'twitter');
+            copyToClipboard(generateTwitterThread(article), 'Twitter thread');
+        }
+
+        function copyReddit(article) {
+            markSyndicated(article.slug, 'reddit');
+            copyToClipboard(generateRedditPost(article), 'Reddit post');
+        }
+
+        function copyLinkedIn(article) {
+            markSyndicated(article.slug, 'linkedin');
+            copyToClipboard(generateLinkedInPost(article), 'LinkedIn post');
+        }
+
+        function syndicateAll(platform) {
+            const allText = articles.map(a => {
+                switch(platform) {
+                    case 'twitter': return generateTwitterThread(a);
+                    case 'reddit': return generateRedditPost(a);
+                    case 'linkedin': return generateLinkedInPost(a);
+                    default: return `${a.title}\n${SITE_URL}/blog/${a.slug}.html`;
+                }
+            }).join('\n\n---\n\n');
+
+            copyToClipboard(allText, `All ${platform} posts`);
+            articles.forEach(a => markSyndicated(a.slug, platform));
+        }
+
+        function renderArticles(filter = 'all') {
+            const container = document.getElementById('articlesContainer');
+            const syndicated = getSyndicated();
+            const filtered = articles.filter(a => {
+                if (filter === 'all') return true;
+                const isSyndicated = syndicated[a.slug] && syndicated[a.slug].length > 0;
+                return filter === 'syndicated' ? isSyndicated : !isSyndicated;
+            });
+
+            container.innerHTML = filtered.map(article => {
+                const isSyndicated = syndicated[article.slug] && syndicated[article.slug].length > 0;
+                const platforms = syndicated[article.slug] || [];
+                return `
+                    <div class="article-card ${isSyndicated ? 'syndicated' : ''}">
+                        <div class="article-header">
+                            <div class="article-title">${article.title}</div>
+                            ${isSyndicated ? '<span class="syndicated-badge">✓</span>' : ''}
+                        </div>
+                        <div class="article-tags">
+                            ${article.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="article-actions">
+                            <button class="action-btn devto" onclick="openDevto(articles.find(a => a.slug === '${article.slug}'))">Dev.to</button>
+                            <button class="action-btn medium" onclick="openMedium(articles.find(a => a.slug === '${article.slug}'))">Medium</button>
+                            <button class="action-btn hashnode" onclick="openHashnode(articles.find(a => a.slug === '${article.slug}'))">Hashnode</button>
+                            <button class="action-btn twitter" onclick="copyTwitter(articles.find(a => a.slug === '${article.slug}'))">Twitter</button>
+                            <button class="action-btn reddit" onclick="copyReddit(articles.find(a => a.slug === '${article.slug}'))">Reddit</button>
+                            <button class="action-btn linkedin" onclick="copyLinkedIn(articles.find(a => a.slug === '${article.slug}'))">LinkedIn</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            const syndicated = getSyndicated();
+            const syndicatedCount = Object.keys(syndicated).length;
+            const total = articles.length;
+            const percent = Math.round((syndicatedCount / total) * 100);
+            const potentialViews = syndicatedCount * 500; // Estimate 500 views per syndicated article
+
+            document.getElementById('syndicatedCount').textContent = syndicatedCount;
+            document.getElementById('progressPercent').textContent = percent;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('potentialViews').textContent = potentialViews.toLocaleString();
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderArticles(btn.dataset.filter);
+            });
+        });
+
+        // Initial render
+        renderArticles();
+        updateStats();
+    </script>
+</body>
+</html>
