@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Syndication Hub — Auto-Post to 10+ Platforms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e5e5e5;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero .subtitle {
+            color: #888;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .platform-card {
+            background: #0a0a0f;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .platform-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .platform-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .platform-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .platform-desc {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .platform-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .platform-stat {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: #00ff88;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Content Selector */
+        .content-selector {
+            margin-bottom: 30px;
+        }
+
+        .selector-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .selector-item {
+            background: #0a0a0f;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .selector-item:hover {
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .selector-item.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .selector-title {
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .selector-meta {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: #0a0a0f;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .preview-content {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: #ccc;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .bulk-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .bulk-btn:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .bulk-btn.all {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+        }
+
+        /* Copy Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .copy-box {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .copy-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ccc;
+            font-size: 0.9rem;
+            resize: none;
+            min-height: 200px;
+            font-family: inherit;
+        }
+
+        .copy-textarea:focus {
+            outline: none;
+        }
+
+        .copy-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Success Animation */
+        .success-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00ff88;
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Content Syndication Hub</h1>
+            <p class="subtitle">Turn your Amazon seller content into viral posts across 10+ platforms. One click = everywhere.</p>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-value" id="totalSyndicated">0</div>
+                    <div class="stat-label">Posts Syndicated</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalViews">0</div>
+                    <div class="stat-label">Est. Reach</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">10+</div>
+                    <div class="stat-label">Platforms</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Selector -->
+        <div class="section content-selector">
+            <h2>📝 Select Content to Syndicate</h2>
+
+            <div class="selector-grid" id="contentGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <button class="bulk-btn all" onclick="selectAll()">
+                ✅ Select All (10 platforms)
+            </button>
+            <button class="bulk-btn" onclick="copyForAll()">
+                📋 Copy All Content
+            </button>
+            <button class="bulk-btn" onclick="openTemplates()">
+                📄 View Templates
+            </button>
+        </div>
+
+        <!-- Platform Grid -->
+        <div class="section">
+            <h2>🚀 Syndication Platforms</h2>
+            <p style="color: #888; margin-bottom: 20px;">Click any platform to get platform-specific formatted content ready to paste.</p>
+
+            <div class="platform-grid" id="platformGrid">
+                <!-- Platform cards populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Quick Guide -->
+        <div class="section">
+            <h2>⚡ How It Works</h2>
+
+            <div style="display: grid; gap: 20px; margin-top: 20px;">
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="width: 50px; height: 50px; background: rgba(0, 255, 136, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #00ff88; flex-shrink: 0;">1</div>
+                    <div>
+                        <h3 style="color: #fff; margin-bottom: 5px;">Select Your Content</h3>
+                        <p style="color: #888; font-size: 0.9rem;">Choose from our SEO article library. Each article is 2,000-4,000 words and ready to syndicate.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="width: 50px; height: 50px; background: rgba(0, 255, 136, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #00ff88; flex-shrink: 0;">2</div>
+                    <div>
+                        <h3 style="color: #fff; margin-bottom: 5px;">Choose Platforms</h3>
+                        <p style="color: #888; font-size: 0.9rem;">Click the platforms where you want to post. Each platform gets customized formatting (Twitter threads, Reddit posts, etc.).</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="width: 50px; height: 50px; background: rgba(0, 255, 136, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #00ff88; flex-shrink: 0;">3</div>
+                    <div>
+                        <h3 style="color: #fff; margin-bottom: 5px;">Copy & Paste</h3>
+                        <p style="color: #888; font-size: 0.9rem;">Get perfectly formatted content for each platform. One click to copy, then paste and post.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="width: 50px; height: 50px; background: rgba(0, 255, 136, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #00ff88; flex-shrink: 0;">4</div>
+                    <div>
+                        <h3 style="color: #fff; margin-bottom: 5px;">Track Results</h3>
+                        <p style="color: #888; font-size: 0.9rem;">Watch your syndication stats grow. More posts = more traffic = more affiliate commissions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copy Modal -->
+    <div class="modal" id="copyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Copy Content</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div class="copy-box">
+                <textarea class="copy-textarea" id="copyTextarea" readonly></textarea>
+            </div>
+
+            <div class="copy-actions">
+                <button class="btn btn-primary" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+                <button class="btn btn-secondary" onclick="openPlatform()">🔗 Open Platform</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="success-toast" id="successToast">Copied to clipboard!</div>
+
+    <script>
+        // Content Library
+        const contentLibrary = [
+            {
+                id: 1,
+                title: "Helium 10 Review 2026",
+                slug: "helium-10-review-2026",
+                words: 2500,
+                type: "Review",
+                description: "Complete guide to Amazon's #1 seller toolkit",
+                teaser: "I've been using Helium 10 for 3 years. Here's the honest truth about whether it's worth $99/month..."
+            },
+            {
+                id: 2,
+                title: "Jungle Scout Alternatives",
+                slug: "jungle-scout-alternatives-2026",
+                words: 2800,
+                type: "Comparison",
+                description: "7 powerful tools that are cheaper and just as good",
+                teaser: "Why pay $499/year for Jungle Scout when these alternatives do the same job for free?"
+            },
+            {
+                id: 3,
+                title: "Best Amazon Seller Tools 2026",
+                slug: "best-amazon-seller-tools-2026",
+                words: 3500,
+                type: "Guide",
+                description: "Top 15 tools every FBA seller needs",
+                teaser: "I tested 47 different Amazon seller tools. Here's my definitive top 15..."
+            },
+            {
+                id: 4,
+                title: "Amazon PPC Guide 2026",
+                slug: "amazon-ppc-guide-2026",
+                words: 3200,
+                type: "Guide",
+                description: "Master Amazon advertising campaigns",
+                teaser: "My ROAS went from 2.1x to 6.8x after implementing these PPC strategies..."
+            },
+            {
+                id: 5,
+                title: "FBA Profit Calculator Guide",
+                slug: "amazon-fba-calculator",
+                words: 1500,
+                type: "Tool",
+                description: "Calculate your actual profits including all fees",
+                teaser: "Most sellers are losing money and don't even know it. Here's how to calculate your true FBA profit..."
+            },
+            {
+                id: 6,
+                title: "Buy Box Strategy",
+                slug: "buy-box-strategy-amazon",
+                words: 2100,
+                type: "Strategy",
+                description: "Win the Buy Box more often",
+                teaser: "I went from 23% to 78% Buy Box win rate in 90 days. Here's exactly how I did it..."
+            },
+            {
+                id: 7,
+                title: "Amazon Repricing Strategy 2026",
+                slug: "amazon-repricing-strategy-2026",
+                words: 3000,
+                type: "Strategy",
+                description: "Master automated repricing",
+                teaser: "Manual repricing is costing you sales AND money. Here's why automated repricing wins..."
+            },
+            {
+                id: 8,
+                title: "Product Launch Checklist",
+                slug: "amazon-product-launch-checklist",
+                words: 4000,
+                type: "Guide",
+                description: "47 steps to launch like the top 1%",
+                teaser: "I've launched 200+ products on Amazon. This is the exact checklist I use every time..."
+            }
+        ];
+
+        // Platforms
+        const platforms = [
+            {
+                id: 'medium',
+                name: 'Medium',
+                icon: '📝',
+                color: '#00ab6c',
+                desc: 'Long-form articles with large audience',
+                reach: '100K+ readers',
+                format: 'article'
+            },
+            {
+                id: 'devto',
+                name: 'Dev.to',
+                icon: '👨‍💻',
+                color: '#0a0a0f',
+                desc: 'Developer community, great for technical content',
+                reach: '10K+ developers',
+                format: 'article'
+            },
+            {
+                id: 'twitter',
+                name: 'Twitter/X',
+                icon: '𝕏',
+                color: '#000',
+                desc: 'Short threads that go viral',
+                reach: 'Variable',
+                format: 'thread'
+            },
+            {
+                id: 'reddit',
+                name: 'Reddit',
+                icon: '📱',
+                color: '#ff4500',
+                desc: 'Post in relevant subreddits',
+                reach: 'r/AmazonSeller (100K+)',
+                format: 'post'
+            },
+            {
+                id: 'linkedin',
+                name: 'LinkedIn',
+                icon: '💼',
+                color: '#0077b5',
+                desc: 'Professional B2B content',
+                reach: 'Professionals',
+                format: 'post'
+            },
+            {
+                id: 'hashnode',
+                name: 'Hashnode',
+                icon: '✍️',
+                color: '#2962ff',
+                desc: 'Blogging platform for developers',
+                reach: '1M+ users',
+                format: 'article'
+            },
+            {
+                id: 'substack',
+                name: 'Substack',
+                icon: '📧',
+                color: '#ff6719',
+                desc: 'Email newsletter content',
+                reach: 'Subscribers',
+                format: 'newsletter'
+            },
+            {
+                id: 'quora',
+                name: 'Quora',
+                icon: '❓',
+                color: '#b92b27',
+                desc: 'Q&A format, establish authority',
+                reach: '300M users',
+                format: 'answer'
+            },
+            {
+                id: 'hackernews',
+                name: 'Hacker News',
+                icon: '🚀',
+                color: '#ff6600',
+                desc: 'Tech community, high engagement',
+                reach: 'Tech enthusiasts',
+                format: 'post'
+            },
+            {
+                id: 'producthunt',
+                name: 'Product Hunt',
+                icon: '🎯',
+                color: '#da552f',
+                desc: 'Launch products and tools',
+                reach: '100K+ makers',
+                format: 'launch'
+            }
+        ];
+
+        // State
+        let selectedContent = null;
+        let stats = JSON.parse(localStorage.getItem('syndicationStats')) || {
+            syndicated: 0,
+            estimatedReach: 0
+        };
+
+        // Initialize
+        function init() {
+            renderContentGrid();
+            renderPlatformGrid();
+            updateStats();
+
+            // Load last selected content
+            const lastSelected = localStorage.getItem('lastSelectedContent');
+            if (lastSelected) {
+                selectContent(parseInt(lastSelected));
+            }
+        }
+
+        // Render content grid
+        function renderContentGrid() {
+            const grid = document.getElementById('contentGrid');
+            grid.innerHTML = contentLibrary.map(content => `
+                <div class="selector-item ${selectedContent?.id === content.id ? 'selected' : ''}"
+                     onclick="selectContent(${content.id})">
+                    <div class="selector-title">${content.title}</div>
+                    <div class="selector-meta">${content.words} words • ${content.type}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render platform grid
+        function renderPlatformGrid() {
+            const grid = document.getElementById('platformGrid');
+            grid.innerHTML = platforms.map(platform => `
+                <div class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-icon" style="background: ${platform.color}20; color: ${platform.color};">
+                            ${platform.icon}
+                        </div>
+                        <div class="platform-name">${platform.name}</div>
+                    </div>
+                    <div class="platform-desc">${platform.desc}</div>
+                    <div class="platform-stats">
+                        <div class="platform-stat">${platform.reach}</div>
+                        <div class="platform-stat">${platform.format}</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="getPlatformContent('${platform.id}')">
+                        Get ${platform.name} Content
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Select content
+        function selectContent(id) {
+            selectedContent = contentLibrary.find(c => c.id === id);
+            localStorage.setItem('lastSelectedContent', id);
+            renderContentGrid();
+
+            // Track selection
+            if (!selectedContent.syndicated) {
+                selectedContent.syndicated = [];
+            }
+        }
+
+        // Select all platforms
+        function selectAll() {
+            if (!selectedContent) {
+                showToast('Please select content first');
+                return;
+            }
+
+            // Open modal with all content
+            const allContent = platforms.map(p => {
+                return `=== ${p.name.toUpperCase()} ===\n\n${generateContent(p.id)}`;
+            }).join('\n\n---\n\n');
+
+            document.getElementById('modalTitle').textContent = 'All Platform Content';
+            document.getElementById('copyTextarea').value = allContent;
+            document.getElementById('copyModal').classList.add('active');
+
+            stats.syndicated += platforms.length;
+            updateStats();
+        }
+
+        // Copy for all
+        function copyForAll() {
+            selectAll();
+        }
+
+        // Open templates
+        function openTemplates() {
+            const templates = `
+=== CONTENT SYNDICATION TEMPLATES ===
+
+TWITTER THREAD TEMPLATE:
+Hook (1 tweet):
+"After analyzing 200+ Amazon sellers, I found the #1 mistake that kills Buy Box win rates..."
+
+Body (3-10 tweets):
+- Point 1 with stat
+- Point 2 with example
+- Point 3 with action step
+
+CTA:
+"Full guide in comments. Drop a 🔥 and I'll DM you the playbook."
+
+---
+
+REDDIT POST TEMPLATE:
+Title: "[SHARE] I analyzed 200+ Amazon sellers. Here's what the top 1% do differently"
+
+Body:
+"I've been selling on Amazon for 5 years and recently analyzed 200+ top sellers.
+Here's what I found:
+
+1. They automate repricing
+2. They track competitor prices 24/7
+3. They never miss a Buy Box opportunity
+
+The data was shocking... [insert stat or insight]
+
+AMA about Amazon selling!"
+
+---
+
+LINKEDIN POST TEMPLATE:
+Hook: "I analyzed 200+ Amazon sellers. Here's the uncomfortable truth:"
+
+Body: 3-4 short paragraphs with line breaks
+- Paragraph 1: The problem
+- Paragraph 2: The data/insight
+- Paragraph 3: The solution
+- Paragraph 4: The takeaway
+
+CTA: "Thoughts? Drop them below. 👇"
+
+Tags: #AmazonSeller #Ecommerce #FBA #AmazonFBA #Entrepreneurship
+`;
+            document.getElementById('modalTitle').textContent = 'Content Templates';
+            document.getElementById('copyTextarea').value = templates;
+            document.getElementById('copyModal').classList.add('active');
+        }
+
+        // Get platform-specific content
+        function getPlatformContent(platformId) {
+            if (!selectedContent) {
+                showToast('Please select content first');
+                return;
+            }
+
+            const platform = platforms.find(p => p.id === platformId);
+            const content = generateContent(platformId);
+
+            document.getElementById('modalTitle').textContent = `${platform.name} Content`;
+            document.getElementById('copyTextarea').value = content;
+            document.getElementById('copyModal').classList.add('active');
+
+            stats.syndicated++;
+            updateStats();
+        }
+
+        // Generate content for platform
+        function generateContent(platformId) {
+            const content = selectedContent;
+            const baseUrl = window.location.href.replace(/\/syndication\.html.*/, '');
+
+            switch(platformId) {
+                case 'medium':
+                    return `${content.title}
+
+By [Your Name]
+
+${content.description}
+
+I've spent years in the Amazon selling space, and ${content.teaser}
+
+In this comprehensive guide, I'll share everything you need to know about ${content.title.toLowerCase()}.
+
+[Article body would go here - full article available at ${baseUrl}/blog/${content.slug}.html]
+
+Key takeaways:
+• [Key insight 1]
+• [Key insight 2]
+• [Key insight 3]
+
+Want to learn more? Check out the full guide: ${baseUrl}/blog/${content.slug}.html
+
+---
+#AmazonSeller #Ecommerce #FBA #AmazonTips #SellerCommunity`;
+
+                case 'devto':
+                    return `${content.title}
+
+# ${content.type}: ${content.description}
+
+## Introduction
+
+${content.teaser}
+
+In this article, we'll cover:
+- [Key point 1]
+- [Key point 2]
+- [Key point 3]
+
+## Main Content
+
+[Detailed article content would go here]
+
+## Conclusion
+
+For a complete guide with step-by-step instructions, visit: ${baseUrl}/blog/${content.slug}.html
+
+## Tags
+amazon, ecommerce, fba, amazon-seller, automation`;
+
+                case 'twitter':
+                    return `🧵 ${content.title}
+
+A thread on what ${content.description}:
+
+${selectedContent.words / 200 | 0} min read
+
+---
+
+${content.teaser}
+
+Here's what I found after years of testing:
+
+1️⃣ [First insight]
+
+2️⃣ [Second insight]
+
+3️⃣ [Third insight]
+
+---
+
+The data doesn't lie.
+
+Most sellers are leaving money on the table because they don't know this one thing...
+
+[Thread continues with detailed points]
+
+---
+
+Full guide + free tools:
+${baseUrl}/blog/${content.slug}.html
+
+RT if you found this useful 🔄
+
+#AmazonFBA #SellerTips`;
+
+                case 'reddit':
+                    return `${content.title}
+
+I spent years analyzing what separates successful Amazon sellers from struggling ones.
+
+Here's what I found:
+
+${content.teaser}
+
+KEY FINDINGS:
+
+• ${content.description}
+• [Data point 1]
+• [Data point 2]
+
+The most surprising stat? [Surprising statistic about seller behavior or results]
+
+Has this been your experience? Drop your thoughts below.
+
+AMA about Amazon selling strategies!
+
+---
+Edit: Here's the tool I use for [related task]: ${baseUrl}`;
+
+                case 'linkedin':
+                    return `I analyzed ${content.words} words of Amazon selling data.
+
+Here's what the top 1% of sellers do differently.
+
+${content.teaser}
+
+After working with hundreds of sellers, three patterns consistently emerge:
+
+▸ They automate repetitive tasks
+▸ They track everything
+▸ They optimize continuously
+
+Most sellers focus on the wrong things.
+
+They spend hours on [inefficient activity] instead of [high-impact activity].
+
+The data is clear: sellers who implement these strategies see [X]% improvement in [metric].
+
+What's the #1 thing you'd change about your Amazon strategy?
+
+👇 Comment below
+
+#AmazonSeller #Ecommerce #FBA #Entrepreneurship #BusinessGrowth`;
+
+                case 'hashnode':
+                    return `${content.title}
+
+# ${content.type}
+
+## Overview
+${content.description}
+
+## Introduction
+${content.teaser}
+
+## Key Points
+
+### 1. [Main Point]
+[Detailed explanation with examples]
+
+### 2. [Main Point]
+[Detailed explanation with examples]
+
+### 3. [Main Point]
+[Detailed explanation with examples]
+
+## Conclusion
+For the complete guide, visit: ${baseUrl}/blog/${content.slug}.html
+
+Tags: amazon, ecommerce, fba, automation, tools`;
+
+                case 'substack':
+                    return `Hey there,
+
+Today I want to share something that's been on my mind:
+
+${content.teaser}
+
+After years of analyzing Amazon sellers, here's what I keep seeing:
+
+The top performers do these 3 things differently:
+
+1. They invest in the right tools
+2. They automate repetitive work
+3. They track their numbers obsessively
+
+Most sellers are doing the opposite.
+
+They're manually checking prices. They're using free tools that give them 15-minute-delayed data. They're flying blind.
+
+Sound familiar?
+
+I've put together a comprehensive guide covering ${content.description}.
+
+It includes:
+- Step-by-step instructions
+- Real examples
+- Free tools to get started
+
+Check it out here: ${baseUrl}/blog/${content.slug}.html
+
+To your Amazon success,
+[Your Name]
+
+P.S. Reply "TOOLS" to this email and I'll send you my list of must-have Amazon seller tools.`;
+
+                case 'quora':
+                    return `What are the best ${content.title.toLowerCase().replace('2026', '')} strategies?
+
+Great question! I've been selling on Amazon for several years and here's what I've learned:
+
+${content.teaser}
+
+KEY STRATEGIES:
+
+1. [Strategy 1 with example]
+
+2. [Strategy 2 with example]
+
+3. [Strategy 3 with example]
+
+The most important thing is to [key takeaway].
+
+For a comprehensive guide, check out: ${baseUrl}/blog/${content.slug}.html
+
+Happy selling!`;
+
+                case 'hackernews':
+                    return `${content.title}
+
+${content.description}
+
+${content.teaser}
+
+I recently analyzed hundreds of Amazon sellers to understand what separates the successful ones from the rest.
+
+Key findings:
+- Automation correlates with 3x higher efficiency
+- Real-time price tracking leads to better Buy Box win rates
+- Top sellers spend less than 2 hours/week on manual monitoring
+
+The full analysis with methodology is available at ${baseUrl}/blog/${content.slug}.html
+
+Would love to hear other sellers' experiences with automation and tools.`;
+
+                case 'producthunt':
+                    return `🚀 ${content.title}
+
+Introducing a comprehensive guide for Amazon sellers: ${content.description}
+
+## What is it?
+A ${content.words} word deep-dive covering everything you need to know about ${content.title.toLowerCase()}.
+
+## Key Features
+✅ ${selectedContent.words / 500 | 0}+ data points analyzed
+✅ Actionable strategies you can implement today
+✅ Free tools and templates included
+✅ Updated for 2026
+
+## Why I built this
+${content.teaser}
+
+I spent years learning what works and what doesn't in Amazon selling. This guide distills all of that into actionable advice.
+
+## Check it out
+${baseUrl}/blog/${content.slug}.html
+
+Upvote if you found this helpful! 🙏
+
+#Amazon #Ecommerce #FBA #Startup`;
+
+                default:
+                    return content.teaser;
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            const text = document.getElementById('copyTextarea').value;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            });
+        }
+
+        // Open platform
+        function openPlatform() {
+            const title = document.getElementById('modalTitle').textContent;
+            let url = '';
+
+            if (title.includes('Medium')) url = 'https://medium.com/new-story';
+            else if (title.includes('Dev.to')) url = 'https://dev.to/new';
+            else if (title.includes('Twitter')) url = 'https://twitter.com/compose/tweet';
+            else if (title.includes('Reddit')) url = 'https://reddit.com/r/AmazonSeller/submit';
+            else if (title.includes('LinkedIn')) url = 'https://linkedin.com/feed/';
+            else if (title.includes('Hashnode')) url = 'https://hashnode.com/new';
+            else if (title.includes('Substack')) url = 'https://substack.com/new-post';
+            else if (title.includes('Quora')) url = 'https://quora.com/compose';
+            else if (title.includes('Hacker')) url = 'https://news.ycombinator.com/submit';
+            else if (title.includes('Product')) url = 'https://producthunt.com/post/new';
+
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('copyModal').classList.remove('active');
+        }
+
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('successToast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalSyndicated').textContent = stats.syndicated;
+            document.getElementById('totalViews').textContent = (stats.syndicated * 500).toLocaleString();
+            localStorage.setItem('syndicationStats', JSON.stringify(stats));
+        }
+
+        // Close modal on click outside
+        document.getElementById('copyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
