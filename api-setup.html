@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Setup — Enable Automated Traffic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a24;
+            --border: #2a2a3a;
+            --text-primary: #ffffff;
+            --text-secondary: #8888a0;
+            --accent-red: #ff4444;
+            --accent-orange: #ff8844;
+            --accent-yellow: #ffaa00;
+            --accent-green: #00ff88;
+            --accent-blue: #4a9eff;
+            --accent-purple: #a855f7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.1));
+            border-radius: 24px;
+            border: 2px solid var(--accent-green);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .api-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .api-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .api-card.completed {
+            border-color: var(--accent-green);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
+        }
+
+        .api-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .api-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .api-icon.twitter { background: rgba(29, 161, 242, 0.2); }
+        .api-icon.reddit { background: rgba(255, 69, 0, 0.2); }
+        .api-icon.linkedin { background: rgba(0, 119, 181, 0.2); }
+        .api-icon.google { background: rgba(66, 133, 244, 0.2); }
+
+        .api-info h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .api-info p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            margin-left: auto;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 136, 68, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .status-badge.done {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .setup-steps {
+            background: var(--bg-hover);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .setup-steps h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .setup-steps ol {
+            padding-left: 1.5rem;
+            line-height: 2;
+        }
+
+        .setup-steps a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .setup-steps a:hover {
+            text-decoration: underline;
+        }
+
+        .code-block {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .code-block .key {
+            color: var(--accent-green);
+        }
+
+        .code-block .value {
+            color: var(--accent-yellow);
+        }
+
+        .secret-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .secret-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .secret-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .save-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-green);
+            color: #000;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #24292e;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .github-link:hover {
+            background: #333;
+            transform: scale(1.02);
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(74, 158, 255, 0.1));
+            border: 1px solid var(--accent-green);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .result-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .setup-guide {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .setup-guide h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--accent-purple);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .copy-btn.copied {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔌 API Setup</h1>
+            <p>
+                Enable automated social posting. Set up API credentials once,
+                get traffic forever. GitHub Actions will post for you daily.
+            </p>
+        </div>
+
+        <!-- Twitter API Setup -->
+        <div class="api-card" id="twitter-card">
+            <div class="api-header">
+                <div class="api-icon twitter">🐦</div>
+                <div class="api-info">
+                    <h2>Twitter / X API</h2>
+                    <p>Post tweets automatically twice daily</p>
+                </div>
+                <span class="status-badge pending" id="twitter-status">Not Set</span>
+            </div>
+
+            <div class="setup-steps">
+                <h3>How to get Twitter API credentials:</h3>
+                <ol>
+                    <li>Go to <a href="https://developer.twitter.com" target="_blank">developer.twitter.com</a> and sign in</li>
+                    <li>Click "Developer Portal" → Create a Project</li>
+                    <li>Name it "AutoCompany Traffic" and select "Posting" permissions</li>
+                    <li>Create an App and note the credentials below</li>
+                    <li>Apply for "Elevated" access (needed for posting)</li>
+                </ol>
+            </div>
+
+            <div class="secret-inputs">
+                <input type="text" class="secret-input" id="twitter-api-key" placeholder="API Key (Consumer Key)">
+                <input type="text" class="secret-input" id="twitter-api-secret" placeholder="API Secret (Consumer Secret)">
+                <input type="text" class="secret-input" id="twitter-access-token" placeholder="Access Token">
+                <input type="text" class="secret-input" id="twitter-access-secret" placeholder="Access Token Secret">
+                <button class="save-btn" onclick="saveTwitter()">
+                    <span>💾</span> Save Twitter Credentials
+                </button>
+            </div>
+        </div>
+
+        <!-- Reddit API Setup -->
+        <div class="api-card" id="reddit-card">
+            <div class="api-header">
+                <div class="api-icon reddit">🤖</div>
+                <div class="api-info">
+                    <h2>Reddit API</h2>
+                    <p>Post to subreddits automatically</p>
+                </div>
+                <span class="status-badge pending" id="reddit-status">Not Set</span>
+            </div>
+
+            <div class="setup-steps">
+                <h3>How to get Reddit API credentials:</h3>
+                <ol>
+                    <li>Go to <a href="https://www.reddit.com/prefs/apps" target="_blank">reddit.com/prefs/apps</a></li>
+                    <li>Click "Create Another App"</li>
+                    <li>Select "script" type, name it "AutoCompany Bot"</li>
+                    <li>Copy your credentials below (note: Client ID is under your username)</li>
+                </ol>
+            </div>
+
+            <div class="secret-inputs">
+                <input type="text" class="secret-input" id="reddit-client-id" placeholder="Client ID (under your username)">
+                <input type="text" class="secret-input" id="reddit-client-secret" placeholder="Client Secret">
+                <input type="text" class="secret-input" id="reddit-username" placeholder="Reddit Username">
+                <input type="password" class="secret-input" id="reddit-password" placeholder="Reddit Password">
+                <button class="save-btn" onclick="saveReddit()">
+                    <span>💾</span> Save Reddit Credentials
+                </button>
+            </div>
+        </div>
+
+        <!-- LinkedIn API Setup -->
+        <div class="api-card" id="linkedin-card">
+            <div class="api-header">
+                <div class="api-icon linkedin">💼</div>
+                <div class="api-info">
+                    <h2>LinkedIn API</h2>
+                    <p>Post to LinkedIn automatically (requires approval)</p>
+                </div>
+                <span class="status-badge pending" id="linkedin-status">Not Set</span>
+            </div>
+
+            <div class="setup-steps">
+                <h3>LinkedIn API is restricted. Alternative options:</h3>
+                <ol>
+                    <li><strong>Buffer</strong> (Recommended): Sign up at <a href="https://buffer.com" target="_blank">buffer.com</a> - Free for 3 channels</li>
+                    <li><strong>Hootsuite</strong>: Free for 3 social accounts</li>
+                    <li><strong>Manual</strong>: Copy posts from batch generator to LinkedIn</li>
+                </ol>
+            </div>
+
+            <div class="code-block">
+                For Buffer/Hootsuite: Use the "Copy All Posts" button in
+                batch-social-generator.html and paste into your scheduler.
+            </div>
+        </div>
+
+        <!-- GitHub Secrets Setup -->
+        <div class="api-card">
+            <div class="api-header">
+                <div class="api-icon google">⚙️</div>
+                <div class="api-info">
+                    <h2>GitHub Actions Setup</h2>
+                    <p>Enable automated posting workflow</p>
+                </div>
+            </div>
+
+            <div class="setup-guide">
+                <h3>After getting credentials, add them to GitHub:</h3>
+                <ol>
+                    <li>Go to your GitHub repo: <span id="repo-url">github.com/YOUR_USERNAME/affiliate-content-engine</span></li>
+                    <li>Click "Settings" → "Secrets and variables" → "Actions"</li>
+                    <li>Click "New repository secret" for each credential</li>
+                </ol>
+
+                <h3>Secrets to add:</h3>
+                <div class="code-block">
+                    <span class="key">TWITTER_API_KEY</span>=<span class="value">your_twitter_api_key</span><br>
+                    <span class="key">TWITTER_API_SECRET</span>=<span class="value">your_twitter_api_secret</span><br>
+                    <span class="key">TWITTER_ACCESS_TOKEN</span>=<span class="value">your_twitter_access_token</span><br>
+                    <span class="key">TWITTER_ACCESS_SECRET</span>=<span class="value">your_twitter_access_secret</span><br>
+                    <span class="key">REDDIT_CLIENT_ID</span>=<span class="value">your_reddit_client_id</span><br>
+                    <span class="key">REDDIT_CLIENT_SECRET</span>=<span class="value">your_reddit_client_secret</span><br>
+                    <span class="key">REDDIT_USERNAME</span>=<span class="value">your_reddit_username</span><br>
+                    <span class="key">REDDIT_PASSWORD</span>=<span class="value">your_reddit_password</span>
+                </div>
+
+                <a href="#" class="github-link" onclick="openGitHubSecrets()">
+                    <span>🔐</span> Open GitHub Secrets
+                </a>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card" id="result-card" style="display: none;">
+            <h2>🎉 Automated Traffic Enabled!</h2>
+            <p>
+                Your credentials are saved. GitHub Actions will now post to
+                Twitter and Reddit twice daily (9 AM and 6 PM UTC).
+            </p>
+            <p style="color: var(--accent-green);">
+                <strong>Expected traffic in 24-48 hours.</strong>
+            </p>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">← Back to Dashboard</a>
+            <a href="batch-social-generator.html" class="nav-link">Batch Generator</a>
+            <a href="traffic-command-center.html" class="nav-link">Traffic Center</a>
+        </div>
+    </div>
+
+    <script>
+        // Check saved credentials on load
+        function checkCredentials() {
+            const twitter = localStorage.getItem('twitter_credentials');
+            const reddit = localStorage.getItem('reddit_credentials');
+
+            if (twitter) {
+                document.getElementById('twitter-status').textContent = 'Saved';
+                document.getElementById('twitter-status').className = 'status-badge done';
+                document.getElementById('twitter-card').classList.add('completed');
+            }
+
+            if (reddit) {
+                document.getElementById('reddit-status').textContent = 'Saved';
+                document.getElementById('reddit-status').className = 'status-badge done';
+                document.getElementById('reddit-card').classList.add('completed');
+            }
+
+            // Check if all done
+            if (twitter && reddit) {
+                document.getElementById('result-card').style.display = 'block';
+            }
+
+            // Show repo URL
+            const repo = localStorage.getItem('github_repo') || 'YOUR_USERNAME/affiliate-content-engine';
+            document.getElementById('repo-url').textContent = 'github.com/' + repo;
+        }
+
+        function saveTwitter() {
+            const apiKey = document.getElementById('twitter-api-key').value;
+            const apiSecret = document.getElementById('twitter-api-secret').value;
+            const accessToken = document.getElementById('twitter-access-token').value;
+            const accessSecret = document.getElementById('twitter-access-secret').value;
+
+            if (!apiKey || !apiSecret || !accessToken || !accessSecret) {
+                alert('Please fill in all Twitter credentials');
+                return;
+            }
+
+            localStorage.setItem('twitter_credentials', JSON.stringify({
+                apiKey,
+                apiSecret,
+                accessToken,
+                accessSecret,
+                savedAt: new Date().toISOString()
+            }));
+
+            document.getElementById('twitter-status').textContent = 'Saved';
+            document.getElementById('twitter-status').className = 'status-badge done';
+            document.getElementById('twitter-card').classList.add('completed');
+
+            checkAllDone();
+            alert('Twitter credentials saved! Add them to GitHub Secrets.');
+        }
+
+        function saveReddit() {
+            const clientId = document.getElementById('reddit-client-id').value;
+            const clientSecret = document.getElementById('reddit-client-secret').value;
+            const username = document.getElementById('reddit-username').value;
+            const password = document.getElementById('reddit-password').value;
+
+            if (!clientId || !clientSecret || !username || !password) {
+                alert('Please fill in all Reddit credentials');
+                return;
+            }
+
+            localStorage.setItem('reddit_credentials', JSON.stringify({
+                clientId,
+                clientSecret,
+                username,
+                savedAt: new Date().toISOString()
+            }));
+
+            document.getElementById('reddit-status').textContent = 'Saved';
+            document.getElementById('reddit-status').className = 'status-badge done';
+            document.getElementById('reddit-card').classList.add('completed');
+
+            checkAllDone();
+            alert('Reddit credentials saved! Add them to GitHub Secrets.');
+        }
+
+        function checkAllDone() {
+            const twitter = localStorage.getItem('twitter_credentials');
+            const reddit = localStorage.getItem('reddit_credentials');
+
+            if (twitter && reddit) {
+                document.getElementById('result-card').style.display = 'block';
+            }
+        }
+
+        function openGitHubSecrets() {
+            const repo = localStorage.getItem('github_repo') || 'YOUR_USERNAME/affiliate-content-engine';
+            window.open(`https://github.com/${repo}/settings/secrets/actions`, '_blank');
+        }
+
+        // Initialize
+        checkCredentials();
+    </script>
+</body>
+</html>
