@@ -1,0 +1,18 @@
+# robots.txt for Auto Company Affiliate Engine
+# https://cheery-marshmallow-fee265.netlify.app/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://cheery-marshmallow-fee265.netlify.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
+
+# Disallow staging files
+Disallow: /deploy*.zip
+Disallow: /*.tmp
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.netlify/
